@@ -1165,6 +1165,23 @@
 
 
   @media (max-width: 639px) {
+    /* On iPhone, the coach behaves like its own full-screen view. The
+       16px input prevents Safari from auto-zooming when it receives focus. */
+    body.ai-chat-open { overflow: hidden; }
+    .ai-panel {
+      inset: 0;
+      width: 100%;
+      max-width: none;
+      height: 100dvh;
+      right: auto;
+      bottom: auto;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .ai-panel-head { padding-top: calc(12px + env(safe-area-inset-top)); }
+    .ai-panel-input-row { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+    .ai-panel-input { font-size: 16px; }
     #view-workouts .card {
       overflow: hidden;
     }
@@ -1195,7 +1212,7 @@
 <body>
 
 <!-- ============ AUTH GATE ============ -->
-<div id="authGate" style="background:url('gym.jpg') center/cover no-repeat;">
+<div id="authGate" style="background:url('./gym.jpg') center/cover no-repeat;">
   <div class="auth-card">
     <div class="tag grit" style="margin-bottom:2px;">Discipline Tracker</div>
     <h1 style="font-size:22px;margin-bottom:18px;">Sign in to continue</h1>
@@ -2906,6 +2923,7 @@
   function openAiCoach(options) {
     options = options || {};
     state.aiPanelOpen = true;
+    document.body.classList.add("ai-chat-open");
     document.getElementById("aiPanel").classList.add("open");
     setAiFabAlert(false);
     if (!state.aiChatMessages.length) {
@@ -2920,6 +2938,7 @@
 
   function closeAiCoach() {
     state.aiPanelOpen = false;
+    document.body.classList.remove("ai-chat-open");
     document.getElementById("aiPanel").classList.remove("open");
   }
 
