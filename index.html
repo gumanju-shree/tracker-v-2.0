@@ -170,7 +170,7 @@
     gap: 10px;
     -webkit-overflow-scrolling: touch;
   }
-  .ai-msg { max-width: 88%; font-size: 13px; line-height: 1.5; }
+  .ai-msg { max-width: 88%; font-size: 14px; line-height: 1.55; }
   .ai-msg.user { align-self: flex-end; }
   .ai-msg.assistant, .ai-msg.system { align-self: flex-start; }
   .ai-msg-bubble {
@@ -1206,7 +1206,7 @@
 <style>
 #authGate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
 #authGate::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.auth-card{position:relative;background:rgba(15,15,15,.55)!important;backdrop-filter:blur(14px);border-radius:18px}
+.auth-card{position:relative;background:rgba(15,15,15,.55)!important;backdrop-filter:blur(14px);border-radius:18px;transform:translateY(clamp(48px,11vh,120px))}
 </style>
 </head>
 <body>
@@ -1504,18 +1504,18 @@
         <span class="dot"></span>
         <div>
           <div class="ai-panel-title-text">SHREE AI Coach</div>
-          <div class="ai-panel-sub" id="aiPanelSub">Progressive overload coach</div>
+          <div class="ai-panel-sub" id="aiPanelSub">Personalised training insights</div>
         </div>
       </div>
       <div class="ai-panel-actions">
-        <button id="aiMinimizeBtn" title="Minimize">–</button>
+        <button id="aiNewChatBtn" title="Start a new chat" aria-label="Start a new chat">↺</button>
         <button id="aiCloseBtn" title="Close">✕</button>
       </div>
     </div>
     <div class="ai-panel-body" id="aiPanelBody"></div>
     <div class="ai-quick-row" id="aiQuickRow"></div>
     <div class="ai-panel-input-row">
-      <textarea id="aiInput" class="ai-panel-input" rows="1" placeholder="Ask about your training…"></textarea>
+      <textarea id="aiInput" class="ai-panel-input" rows="1" placeholder="Ask about progress, form, or your next session…"></textarea>
       <button id="aiSendBtn" class="ai-send-btn" title="Send">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M3 11.5 20.5 4 13 21.5l-2.4-7L3 11.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
       </button>
@@ -2641,6 +2641,36 @@
     return byMuscle;
   }
 
+  // A volume check is computed locally from completed sets, so this common
+  // coaching question remains useful even if the remote model returns an
+  // internal moderation/status payload instead of an answer.
+  function localVolumeCoachAnswer(message) {
+    if (!/muscle groups?.*(need|may need|need more).*volume|volume.*muscle groups?/i.test(message || "")) return null;
+
+    var volume = computeWeeklyMuscleVolume(7);
+    var groups = Object.keys(volume).map(function (name) {
+      return { name: name, sets: volume[name] };
+    }).sort(function (a, b) { return a.sets - b.sets; });
+
+    if (!groups.length) {
+      return {
+        summary: "There are no completed working sets logged in the last 7 days yet.",
+        reason: "Log your sets after each workout and I can compare the muscle groups you actually trained.",
+        recommendation: "LOG_YOUR_NEXT_SESSION",
+        confidence: "LOW"
+      };
+    }
+
+    var lowest = groups.slice(0, Math.min(3, groups.length));
+    var lowestText = lowest.map(function (g) { return g.name + " (" + g.sets + " sets)"; }).join(", ");
+    return {
+      summary: "Your lowest logged muscle-group volume this week is: " + lowestText + ".",
+      reason: "This compares completed working sets from the last 7 days only. Low logged volume is a signal to review your plan, not an automatic reason to add sets.",
+      recommendation: "REVIEW_NEXT_SESSION",
+      confidence: "MODERATE"
+    };
+  }
+
   /**
    * buildWorkoutSnapshot(options)
    * options: { focusExerciseKey } — when set (e.g. from a "Why?" button),
@@ -2729,6 +2759,9 @@
     if (AI_COACH_WORKER_URL.indexOf("YOUR-WORKER-SUBDOMAIN") !== -1) {
       return { ok: false, error: "AI Coach backend isn't configured yet — deploy the Cloudflare Worker (see coach-worker/README.md) and set AI_COACH_WORKER_URL." };
     }
+
+    var localVolumeAnswer = localVolumeCoachAnswer(message);
+    if (localVolumeAnswer) return { ok: true, data: localVolumeAnswer };
 
     aiCoachRequestInFlight = true;
     var controller = new AbortController();
@@ -2900,8 +2933,18 @@
       "How was my training this week?",
       "Which exercises are stalled?",
       "Should I increase my bench press weight?",
-      "Which muscle groups may need more volume?"
+      "Plan my next session",
+      "Which muscle groups may need more volume?",
+      "How should I recover after today’s workout?"
     ];
+  }
+
+  function startNewAiChat() {
+    state.aiChatMessages = [];
+    appendAiMessage({ role: "system", text: "Fresh chat started. Ask about your progress, exercise form, recovery, or your next session." });
+    renderAiQuickRow();
+    var input = document.getElementById("aiInput");
+    if (input) input.focus();
   }
 
   function renderAiQuickRow() {
@@ -4586,7 +4629,7 @@
 
   document.getElementById("aiFabBtn").onclick = function () { toggleAiCoach(); };
   document.getElementById("aiCloseBtn").onclick = function () { closeAiCoach(); };
-  document.getElementById("aiMinimizeBtn").onclick = function () { closeAiCoach(); };
+  document.getElementById("aiNewChatBtn").onclick = function () { startNewAiChat(); };
   document.getElementById("aiSendBtn").onclick = function () {
     var input = document.getElementById("aiInput");
     sendAiCoachMessage(input.value);
