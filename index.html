@@ -882,6 +882,62 @@
     font-weight: 600;
   }
   .logger-actions { display: flex; gap: 6px; }
+
+  /* Est. 1RM badge (reuses trend-badge sizing) */
+  .rm-badge {
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    color: var(--muted);
+    background: #14110D;
+    border: 1px solid var(--border);
+  }
+
+  /* Top-set trend sparkline */
+  .spark-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .spark-label {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--dim);
+    white-space: nowrap;
+  }
+  .spark-svg { flex-shrink: 0; }
+
+  /* Rest timer */
+  .rest-timer-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .rest-timer-display {
+    min-width: 34px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .rest-timer-display.rest-timer-active { color: var(--iron-orange); font-weight: 700; }
+  .rest-timer-display.rest-timer-done { color: var(--green); font-weight: 700; }
+  .rest-timer-btn {
+    background: #1A1714;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 10.5px;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+  .rest-timer-btn:hover { color: var(--iron-orange); border-color: var(--iron-orange); }
+  .rest-timer-stop { color: var(--dim); }
+
   .logger-panel {
     margin-top: 8px;
     padding: 10px;
@@ -1182,25 +1238,183 @@
     .ai-panel-head { padding-top: calc(12px + env(safe-area-inset-top)); }
     .ai-panel-input-row { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
     .ai-panel-input { font-size: 16px; }
-    #view-workouts .card {
-      overflow: hidden;
+
+    /* General tightening so cards use the full narrow width well */
+    .wrap { padding: 20px 12px calc(40px + env(safe-area-inset-bottom)); }
+    .card { padding: 14px; border-radius: 12px; }
+    .card-title { font-size: 15px; }
+    .top-tabs { gap: 2px; margin-bottom: 16px; }
+    .top-tab { font-size: 12.5px; padding: 8px 2px; margin-right: 10px; }
+    .header h1 { font-size: 18px; }
+
+    /* Workout Plans: no more sideways-scrolling table — each exercise
+       becomes its own stacked card so everything is readable and
+       tappable without zooming or scrolling horizontally. */
+    #view-workouts .card { overflow: visible; }
+    #workoutTable, #workoutTable tbody { display: block; width: 100%; }
+    #workoutTable thead { display: none; }
+    #workoutTable tr {
+      display: block;
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px 10px 6px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #14110D;
     }
-    #workoutTable {
-      min-width: 720px;
+    #workoutTable tr:last-child { margin-bottom: 0; }
+    /* The day-title row and Saturday rest-day row (colspan=4) keep a plain look */
+    #workoutTable tr:has(td[colspan]) {
+      background: transparent;
+      border: none;
+      padding: 4px 2px;
     }
-    #workoutTable th,
     #workoutTable td {
-      padding-left: 7px;
-      padding-right: 7px;
+      display: block;
+      width: 100% !important;
+      box-sizing: border-box;
+      padding: 6px 2px;
+      border-bottom: none;
+      text-align: left !important;
     }
+    #workoutTable td[data-label]::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 3px;
+    }
+    #workoutTable td.muscle-cell { text-align: left; }
+    .muscle-cell-inner { justify-content: flex-start !important; }
+    .weight-cell { flex-wrap: wrap; }
     .logger-summary {
       align-items: flex-start;
     }
+
+    /* Editable daily schedule, stacked fields on narrow screens */
+    .sched-edit-fields { flex-direction: column; }
+    .sched-edit-controls { justify-content: flex-end; }
   }
 
   @media (min-width: 640px) {
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   }
+
+  /* Editable Daily Schedule */
+  .sched-row-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px 0;
+    border-bottom: 1px solid #1A1714;
+  }
+  .sched-row-edit:last-child { border-bottom: none; }
+  .sched-edit-input {
+    background: #0F0D0B;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 12.5px;
+    padding: 7px 8px;
+  }
+  .sched-edit-time { width: 90px; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; }
+  .sched-edit-fields { display: flex; gap: 6px; flex: 1; min-width: 160px; }
+  .sched-edit-fields .sched-edit-input { flex: 1; min-width: 0; }
+  .sched-edit-note { color: var(--muted); }
+  .sched-edit-input:focus { outline: none; border-color: var(--iron-orange); }
+  .sched-edit-controls { display: flex; gap: 4px; flex-shrink: 0; }
+  .sched-move-btn, .sched-del-btn {
+    background: #1A1714;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+  }
+  .sched-move-btn:hover:not(:disabled), .sched-del-btn:hover { color: var(--iron-orange); border-color: var(--iron-orange); }
+  .sched-move-btn:disabled { opacity: 0.35; cursor: default; }
+  .sched-del-btn:hover { color: var(--coral); border-color: var(--coral); }
+
+  /* Current-time highlight on the daily schedule */
+  .sched-row-current {
+    background: #1E1712;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-left: -8px;
+    margin-right: -8px;
+    box-shadow: inset 2px 0 0 var(--iron-orange);
+  }
+  .sched-now-chip {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--bg);
+    background: var(--iron-orange);
+    border-radius: 8px;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .sched-notify-btn {
+    font-size: 10.5px;
+  }
+  .sched-notify-btn.on { color: var(--green-soft); border-color: #2E5C3F; }
+
+  /* Habit insights */
+  .insight-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+  }
+  .insight-bar-label {
+    width: 130px;
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .insight-bar-track {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: #1A1714;
+    overflow: hidden;
+  }
+  .insight-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--iron-red), var(--iron-orange));
+  }
+  .insight-bar-pct {
+    width: 38px;
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: #1A1714;
+    cursor: default;
+  }
+  .heatmap-cell.empty { background: transparent; }
 </style>
 
 <style>
@@ -1253,8 +1467,6 @@
   <div class="top-tabs">
     <button class="top-tab active" data-tab="tracker">Tracker</button>
     <button class="top-tab" data-tab="workouts">Workout Plans</button>
-    <button class="top-tab" data-tab="nutrition">Nutrition Guide</button>
-    <button class="top-tab" data-tab="foodlog">Food Log</button>
   </div>
 
   <!-- ============ TRACKER VIEW ============ -->
@@ -1293,8 +1505,30 @@
     </div>
 
     <div class="card">
-      <div class="section-tag mono">DAILY SCHEDULE · SUN–FRI</div>
+      <div class="card-head" style="margin-bottom:10px;">
+        <div class="section-tag mono" style="margin-bottom:0;">DAILY SCHEDULE · SUN–FRI</div>
+        <div style="display:flex; gap:8px;">
+          <button class="hist-btn sched-notify-btn" id="scheduleNotifyBtn" title="Get a browser notification when a new time block starts">🔔 Remind me</button>
+          <button class="hist-btn" id="scheduleResetBtn" title="Reset to the default schedule">Reset</button>
+          <button class="hist-btn" id="scheduleEditBtn">Edit</button>
+        </div>
+      </div>
       <div id="scheduleList"></div>
+      <button class="add-btn" id="scheduleAddBtn" style="margin-top:10px; display:none;">+ Add time block</button>
+    </div>
+
+    <div class="card" id="insightsCard">
+      <div class="card-head" style="margin-bottom:12px;">
+        <div class="section-tag mono" style="margin-bottom:0;">HABIT INSIGHTS</div>
+        <div class="day-pill-row" id="insightsRangeToggle" style="margin-bottom:0;">
+          <span class="day-pill active" data-range="7">7 days</span>
+          <span class="day-pill" data-range="30">30 days</span>
+        </div>
+      </div>
+      <div id="insightsSummary" class="nutri-grid"></div>
+      <div id="insightsHabitBars" style="margin-top:6px;"></div>
+      <div class="section-tag mono" style="margin-top:18px;">LAST 28 DAYS</div>
+      <div id="insightsHeatmap" class="heatmap-grid"></div>
     </div>
 
     <div class="footer-note">ENJOY</div>
@@ -1325,166 +1559,6 @@
       <div id="reviewSummaryRow" class="review-summary-row"></div>
       <div id="reviewList"></div>
     </div>
-  </div>
-
-  <!-- ============ NUTRITION VIEW ============ -->
-  <div class="view" id="view-nutrition">
-    <div class="card">
-      <div class="section-tag mono" style="font-size:14px;" id="nutriPhaseTitle"></div>
-      <div class="card-sub" id="nutriPhaseGoal" style="margin-bottom:14px;"></div>
-      <div class="nutri-grid" id="nutriStats"></div>
-      <div class="table-scroll">
-        <table class="data-table" id="nutriMealTable">
-          <thead><tr><th>Meal</th><th>What to eat</th></tr></thead>
-          <tbody id="nutriMealBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-tag mono">WHEY PROTEIN — WHEN &amp; HOW MUCH</div>
-      <div id="proteinNote" style="font-size:13px; color:#C8CCD6; margin-bottom:12px;"></div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th>Timing</th><th>Amount</th><th>Why</th></tr></thead>
-          <tbody id="proteinTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-tag mono">LOCAL PROTEIN SOURCES — KATUNJE, BHAKTAPUR</div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th>Food</th><th>Protein (approx.)</th><th>Notes</th></tr></thead>
-          <tbody id="localProteinBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============ FOOD LOG VIEW ============ -->
-  <div class="view" id="view-foodlog">
-
-    <!-- Profile setup — shown until height/weight/etc are entered -->
-    <div class="card" id="profileSetupCard" style="display:none;">
-      <div class="section-tag mono">SET UP YOUR PROFILE</div>
-      <div class="card-sub" style="margin-bottom:14px;">
-        Your daily calorie, protein, carb, fat, and water targets are calculated from these — fill them in once and I'll do the math (Mifflin-St Jeor BMR + activity level + goal).
-      </div>
-      <div class="custom-grid">
-        <div><span class="custom-label">Height (cm)</span><input type="number" id="profileHeight" class="custom-input" placeholder="e.g. 170" /></div>
-        <div><span class="custom-label">Weight (kg)</span><input type="number" id="profileWeight" class="custom-input" placeholder="e.g. 69" /></div>
-        <div><span class="custom-label">Age</span><input type="number" id="profileAge" class="custom-input" placeholder="e.g. 22" /></div>
-        <div>
-          <span class="custom-label">Gender</span>
-          <select id="profileGender" class="unit-select" style="width:100%;">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
-        <div style="grid-column: 1 / -1;">
-          <span class="custom-label">Activity level (outside of gym sessions)</span>
-          <select id="profileActivity" class="unit-select" style="width:100%;">
-            <option value="sedentary">Sedentary (desk job, little walking)</option>
-            <option value="light">Lightly active (some walking daily)</option>
-            <option value="moderate" selected>Moderately active (on your feet a fair bit)</option>
-            <option value="active">Active (physically demanding day)</option>
-            <option value="veryActive">Very active (manual labor / two-a-days)</option>
-          </select>
-        </div>
-        <div style="grid-column: 1 / -1;">
-          <span class="custom-label">Current goal</span>
-          <select id="profileGoal" class="unit-select" style="width:100%;">
-            <option value="bulk">Bulk — build muscle (calorie surplus)</option>
-            <option value="maintain">Maintain — recomposition</option>
-            <option value="cut">Cut — lose fat (calorie deficit)</option>
-          </select>
-        </div>
-      </div>
-      <button class="add-btn" id="saveProfileBtn" style="margin-top:14px;">Save &amp; calculate my targets</button>
-    </div>
-
-    <div id="foodlogMain" style="display:none;">
-
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title" id="foodlogDateLabel"></div>
-          <div class="card-sub" id="foodlogTargetsSub"></div>
-        </div>
-        <button class="hist-btn" id="editProfileBtn">Edit profile</button>
-      </div>
-      <div class="nutri-grid" id="foodlogSummary"></div>
-      <div id="foodlogVerdict" class="verdict-line"></div>
-    </div>
-
-    <div class="card">
-      <div class="section-tag mono">LOG FOOD OR DRINK</div>
-
-      <div class="day-pill-row" id="foodModeToggle">
-        <span class="day-pill active" data-mode="list">Pick from list</span>
-        <span class="day-pill" data-mode="custom">Custom entry</span>
-      </div>
-
-      <!-- Pick from list mode -->
-      <div id="foodListMode">
-        <select id="foodSelect" class="food-select"></select>
-        <div class="add-row">
-          <input type="number" id="foodQty" class="qty-input" placeholder="qty" step="1" value="1" />
-          <span id="foodUnitLabel" class="weight-unit">serving(s)</span>
-          <button class="add-btn" id="addFromListBtn">Add</button>
-        </div>
-      </div>
-
-      <!-- Custom entry mode -->
-      <div id="foodCustomMode" style="display:none;">
-        <input type="text" id="customName" class="custom-name-input" placeholder="Food or drink name (e.g. Choila)" />
-        <div class="add-row" style="margin-bottom:10px;">
-          <input type="number" id="customQty" class="qty-input" placeholder="qty" step="0.5" value="1" min="0.5" />
-          <select id="customUnit" class="unit-select">
-            <option value="piece(s)">piece(s)</option>
-            <option value="bowl(s)">bowl(s)</option>
-            <option value="cup(s)">cup(s)</option>
-            <option value="glass(es)">glass(es)</option>
-            <option value="ml">ml</option>
-            <option value="g">g</option>
-            <option value="tbsp">tbsp</option>
-            <option value="scoop(s)">scoop(s)</option>
-            <option value="handful(s)">handful(s)</option>
-            <option value="serving(s)">serving(s)</option>
-          </select>
-        </div>
-        <div class="custom-hint">Enter macros for <b>1 unit</b> — the quantity above will auto-multiply</div>
-        <div class="custom-grid">
-          <div><span class="custom-label">Calories (kcal)</span><input type="number" id="customCal" class="custom-input" placeholder="kcal" /></div>
-          <div><span class="custom-label">Protein (g)</span><input type="number" id="customProtein" class="custom-input" placeholder="g" /></div>
-          <div><span class="custom-label">Carbs (g)</span><input type="number" id="customCarbs" class="custom-input" placeholder="g" /></div>
-          <div><span class="custom-label">Fat (g)</span><input type="number" id="customFat" class="custom-input" placeholder="g" /></div>
-          <div><span class="custom-label">Water (ml)</span><input type="number" id="customWater" class="custom-input" placeholder="ml" /></div>
-        </div>
-        <button class="add-btn" id="addCustomBtn" style="margin-top:10px;">Add &amp; save to list</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head">
-        <div class="section-tag mono" style="margin-bottom:0;">TODAY'S LOG</div>
-        <div style="display:flex; gap:8px;">
-          <button class="reset-btn" id="resetTodayBtn">Reset today</button>
-          <button class="calc-btn" id="calculateBtn">Calculate</button>
-        </div>
-      </div>
-      <div id="foodLogList"></div>
-    </div>
-
-    <div class="card">
-      <div class="section-tag mono">HISTORY — PAST DAYS</div>
-      <div id="foodHistoryList"></div>
-    </div>
-
-    </div><!-- /foodlogMain -->
-
   </div>
 
   <!-- ============ SHREE AI COACH — floating button + panel ============ -->
@@ -1782,7 +1856,7 @@
   // =========================================================
   // SCHEDULE — redesigned around a 5:30 PM gym slot
   // =========================================================
-  var SCHEDULE = [
+  var DEFAULT_SCHEDULE = [
     ["8:00 AM", "Wake up", "Water · make bed · no phone 30 min"],
     ["8:00-8:30", "Mobility", "Stretch · light movement · arm circles"],
     ["8:30-10:30", "CompTIA A+ Block 1", "Study guide · practice questions · labs (2h)"],
@@ -1802,160 +1876,11 @@
 
   var SATURDAY_NOTE = "Saturday — Full Rest Day: light/easy movement only. A relaxed walk, optional easy jog, or light futsal as active recovery — nothing that leaves you sore. Stretch, relax, recharge. No structured lifting.";
 
-  // =========================================================
-  // NUTRITION — phase-based, with whey protein dosing
-  // =========================================================
-  var BODYWEIGHT_KG = 69;
-
-  var NUTRITION = {
-    p1: {
-      title: "Phase 1 Nutrition — Foundation & Hypertrophy",
-      goal: "Slight calorie surplus to support new muscle growth while relearning movement. Protein is the priority macro.",
-      stats: [
-        ["Protein target", "1.8-2.0 g/kg → ~125-140g/day"],
-        ["Calories", "Slight surplus (~300-500 kcal above maintenance)"],
-        ["Carbs", "4-5 g/kg — fuels lifting volume"],
-        ["Water", "3-4 L/day"]
-      ],
-      meals: [
-        ["Morning (pre-A+ study)", "Chiura + banana, or roti with 1-2 boiled eggs"],
-        ["Breakfast/Early Lunch (9:30)", "Dal bhat: rice + dal + tarkari + egg/chicken/buffalo portion"],
-        ["Pre-gym snack (~11:30)", "Sattu drink or a banana — light, not heavy before lifting"],
-        ["Post-gym (after 2 PM)", "Whey shake + fruit, or juju dhau with fruit"],
-        ["Dinner (8-9 PM)", "Dal bhat again, smaller rice portion, extra protein + greens (saag)"],
-        ["Before bed (optional)", "Glass of milk"]
-      ],
-      proteinNote: "In Phase 1 you're in a growth phase — food alone often falls short of 125-140g, especially on lighter eating days. Whey fills that gap reliably.",
-      proteinDosing: [
-        ["Post-workout (right after gym, ~2 PM)", "1 scoop (~25g)", "Fastest-absorbed window, right when muscle is most receptive to protein"],
-        ["With breakfast or dinner, if food protein was light that day", "0.5-1 scoop", "Use only if dal bhat + eggs/meat didn't already hit your target"]
-      ]
-    },
-    p2: {
-      title: "Phase 2 Nutrition — Strength + Hypertrophy",
-      goal: "Heavier lifts need more fuel. Keep the surplus going, protein stays high to support continued size and the early conditioning finishers.",
-      stats: [
-        ["Protein target", "1.8-2.0 g/kg → ~125-140g/day"],
-        ["Calories", "Maintain surplus — heavier lifts burn more, don't under-eat"],
-        ["Carbs", "4-5 g/kg, slightly more on finisher days"],
-        ["Water", "3-4 L/day, more after finishers"]
-      ],
-      meals: [
-        ["Morning (pre-A+ study)", "Chiura + banana, or roti with 1-2 boiled eggs"],
-        ["Breakfast/Early Lunch (9:30)", "Dal bhat: bigger rice portion — you're lifting heavier now"],
-        ["Pre-gym snack (~11:30)", "Sattu drink or banana + a few dates if needed"],
-        ["Post-gym (after 2 PM)", "Whey shake + fruit — especially important after finisher cardio"],
-        ["Dinner (8-9 PM)", "Dal bhat + buffalo/chicken/egg + kwati if available — recovery-focused"],
-        ["Before bed (optional)", "Glass of milk"]
-      ],
-      proteinNote: "Same protein target as Phase 1, but the conditioning finishers (stair climbs, intervals) add extra recovery demand. Don't skip the post-workout shake on finisher days.",
-      proteinDosing: [
-        ["Post-workout (right after gym)", "1 scoop (~25g)", "Same logic as Phase 1 — non-negotiable on heavy lift days"],
-        ["On days with a cardio finisher", "+0.5 scoop later in the day", "Extra recovery demand from the added conditioning work"]
-      ]
-    },
-    p3: {
-      title: "Phase 3 Nutrition — POPAT-Specific Conditioning",
-      goal: "Shift from a growth surplus toward maintenance or a slight deficit — the priority now is staying lean and explosive, not gaining size. Protein stays high to protect the muscle you've built while you cut volume.",
-      stats: [
-        ["Protein target", "1.8-2.0 g/kg → ~125-140g/day (protect muscle while leaning out)"],
-        ["Calories", "Maintenance, or slight deficit if cutting weight for POPAT"],
-        ["Carbs", "3-4 g/kg — still need fuel for sprints/circuits, just less padding"],
-        ["Water", "4+ L/day — conditioning work sweats out more"]
-      ],
-      meals: [
-        ["Morning (pre-A+ study)", "Lighter — chiura or fruit, avoid heavy fried food before a circuit day"],
-        ["Breakfast/Early Lunch (9:30)", "Dal bhat, moderate rice — let carbs taper slightly vs Phase 1-2"],
-        ["Pre-gym snack (~11:30)", "Banana or small sattu drink — light fuel for circuits/sprints"],
-        ["Post-gym (after 2 PM)", "Whey shake is now more important than ever — protects muscle during the leaner phase"],
-        ["Dinner (8-9 PM)", "Lean protein focus: chicken/egg/buffalo + greens, lighter on rice"],
-        ["Before bed (optional)", "Glass of milk or curd"]
-      ],
-      proteinNote: "This is the phase where protein protects you. As calories tighten and conditioning volume rises, whey becomes the most reliable way to hit your number without overeating carbs.",
-      proteinDosing: [
-        ["Post-workout/circuit (after gym)", "1 scoop (~25g)", "Most important phase to never skip this — protects muscle during a leaner intake"],
-        ["Mid-morning, if cutting calories", "Keep at 1 scoop/day total", "No need to add a second scoop — focus shifts to food quality, not more powder"]
-      ]
-    }
-  };
-
-  var LOCAL_PROTEIN_FOODS = [
-    ["Dal (lentils, masoor/rahar)", "~9g per 100g cooked", "Eat with every dal bhat meal — cheap and daily-available"],
-    ["Bhatmas/soybean (black soybean)", "~36g per 100g raw", "Highest local plant protein — roast as snack or in curry"],
-    ["Eggs (anda)", "~6g per egg", "Cheap, sold everywhere — 2-4/day is reasonable"],
-    ["Buffalo meat (Newari staple)", "~26g per 100g", "Choila, dyakula — go for grilled/boiled over deep-fried"],
-    ["Chicken (kukhura)", "~27g per 100g", "Widely available, leaner than buffalo"],
-    ["Juju Dhau (buffalo milk curd)", "~4g per 100g", "Bhaktapur specialty, great post-workout with fruit"],
-    ["Rajma (kidney beans)", "~24g per 100g raw", "Use in curry, slow-cooked"],
-    ["Chana (chickpeas)", "~19g per 100g raw", "Roast as snack or chana masala"],
-    ["Sattu (roasted gram flour)", "~20g per 100g", "Mix with water + jaggery — quick protein drink"],
-    ["Kwati (9-bean soup)", "High (mixed beans)", "Traditional, very high protein — great post-leg-day meal"],
-    ["Milk (dudh, local dairy)", "~3.4g per 100ml", "Drink with meals or after training"],
-    ["Whey protein (standard)", "~24-25g per scoop", "Use post-workout primarily — see dosing table above"]
-  ];
-
-  // =========================================================
-  // FOOD LOG — database (per serving) + daily targets
-  // =========================================================
-  // Fallback only, used if getDailyTargets() is ever called with no profile set
-  var DEFAULT_TARGETS = { cal: 3000, protein: 125, carbs: 445, fat: 80, water: 3500 }; // water in ml
-
-  var ACTIVITY_MULTIPLIERS = {
-    sedentary: 1.2,
-    light: 1.375,
-    moderate: 1.55,
-    active: 1.725,
-    veryActive: 1.9
-  };
-  var GOAL_CAL_ADJUST = { cut: 0.8, maintain: 1.0, bulk: 1.15 };
-  var GOAL_PROTEIN_PER_KG = { cut: 2.4, maintain: 2.0, bulk: 2.2 };
-
-  // Mifflin-St Jeor BMR -> TDEE -> goal-adjusted daily targets
-  function computeDailyTargets(profile) {
-    if (!profile || !profile.heightCm || !profile.weightKg || !profile.age) return DEFAULT_TARGETS;
-    var w = profile.weightKg, h = profile.heightCm, age = profile.age;
-    var bmr = (profile.gender === "female")
-      ? (10 * w + 6.25 * h - 5 * age - 161)
-      : (10 * w + 6.25 * h - 5 * age + 5);
-    var actMult = ACTIVITY_MULTIPLIERS[profile.activityLevel] || 1.55;
-    var tdee = bmr * actMult;
-    var goalAdj = GOAL_CAL_ADJUST[profile.goal] || 1.0;
-    var cal = Math.round(tdee * goalAdj);
-
-    var proteinPerKg = GOAL_PROTEIN_PER_KG[profile.goal] || 2.0;
-    var protein = Math.round(w * proteinPerKg);
-
-    var fat = Math.round((cal * 0.25) / 9);
-    var carbsCal = cal - (protein * 4) - (fat * 9);
-    var carbs = Math.round(Math.max(carbsCal, 0) / 4);
-
-    var water = Math.round(Math.max(w * 35, 3000) + 500); // +500ml for training days
-
-    return { cal: cal, protein: protein, carbs: carbs, fat: fat, water: water };
+  // Deep-copies DEFAULT_SCHEDULE so edits to state.schedule never mutate the template.
+  function cloneDefaultSchedule() {
+    return DEFAULT_SCHEDULE.map(function (row) { return row.slice(); });
   }
-  function getDailyTargets() { return computeDailyTargets(state.profile); }
 
-  // Each entry: [name, unitLabel, calories, protein_g, carbs_g, fat_g, water_ml]  — values PER 1 unit/serving
-  var FOOD_DB = [
-    ["Rice (bhaat), 1 cup cooked", "cup(s)", 205, 4.3, 45, 0.4, 0],
-    ["Dal (lentil curry), 1 bowl", "bowl(s)", 150, 9, 20, 4, 50],
-    ["Tarkari (mixed veg curry), 1 bowl", "bowl(s)", 110, 3, 14, 5, 30],
-    ["Buffalo meat curry, 100g", "x100g", 220, 26, 4, 12, 0],
-    ["Chicken curry, 100g", "x100g", 200, 27, 3, 9, 0],
-    ["Egg, boiled (1 egg)", "egg(s)", 78, 6.3, 0.6, 5.3, 0],
-    ["Juju Dhau (curd), 1 cup", "cup(s)", 150, 6, 12, 8, 150],
-    ["Milk, 1 glass (250ml)", "glass(es)", 150, 8, 12, 8, 220],
-    ["Chiura (beaten rice), 1 cup", "cup(s)", 180, 4, 38, 1, 0],
-    ["Sattu drink, 1 glass", "glass(es)", 140, 7, 22, 2, 200],
-    ["Roti (1 piece)", "piece(s)", 120, 3.5, 20, 3, 0],
-    ["Banana, 1 medium", "banana(s)", 105, 1.3, 27, 0.4, 90],
-    ["Bhatmas (roasted soybean), 1 handful (30g)", "handful(s)", 130, 11, 8, 6, 0],
-    ["Kwati (bean soup), 1 bowl", "bowl(s)", 180, 14, 24, 3, 150],
-    ["Whey protein, 1 scoop", "scoop(s)", 120, 24, 3, 1.5, 0],
-    ["Water, 1 glass (250ml)", "glass(es)", 0, 0, 0, 0, 250]
-  ];
-
-  function foodLogDateKey() { return dateKey(new Date()); }
 
   function dateKey(d) {
     var local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
@@ -1979,11 +1904,7 @@
     sessionLogs: {},      // { exerciseKey: [ {date, targetRepMin, targetRepMax, sets:[{setNumber,weightKg,reps}], rir, pain, note}, ... ] } newest first — full per-set history
     openHistory: {},      // { exerciseKey: true/false } — UI-only, not persisted
     openLogger: {},        // { exerciseKey: true/false } — UI-only, whether the set-logging panel is expanded
-    foodLog: {},          // { 'YYYY-MM-DD': [ {name, cal, protein, carbs, fat, water}, ... ] }  -- LIVE working list for today
-    foodHistory: {},      // { 'YYYY-MM-DD': [ [items...], [items...] ] }  -- finalized/calculated sessions, oldest first per date
-    customFoods: [],      // [ {name, unit, cal, protein, carbs, fat, water} ] — per-1-unit macros, saved permanently
-    foodMode: "list",     // UI-only: 'list' or 'custom'
-    profile: null,         // { heightCm, weightKg, age, gender, activityLevel, goal } — used to compute daily targets
+    schedule: null,        // [ {time, activity, note}, ... ] — user-editable daily schedule; defaults to DEFAULT_SCHEDULE
     exerciseReplacements: {}, // { "phaseKey::dayName::originalExerciseName": "replacementExerciseName" }
     aiChatMessages: [],   // UI-only, NOT persisted — { role: 'user'|'assistant'|'system', text, data, warnings } — kept for the active app session only, per spec
     aiPanelOpen: false     // UI-only, NOT persisted
@@ -1997,16 +1918,28 @@
   // daily training on that movement.
   var SESSION_LOG_CAP = 400;
 
+  // Firestore's setDoc() rejects arrays nested directly inside arrays, but
+  // the schedule is authored/rendered everywhere else as [time, activity, note]
+  // rows for brevity. We only convert at the persistence boundary so no other
+  // schedule code (getSchedule, renderSchedule, updateScheduleRow, etc.) has
+  // to change.
+  function scheduleToPersist(schedule) {
+    return (schedule || []).map(function (row) {
+      return { t: row[0] || "", a: row[1] || "", n: row[2] || "" };
+    });
+  }
+  function scheduleFromPersist(arr) {
+    if (!arr || !arr.length) return null;
+    return arr.map(function (o) { return [o.t || "", o.a || "", o.n || ""]; });
+  }
+
   function persistableState() {
     return {
       log: state.log,
       phase: state.phase,
       weightLogs: state.weightLogs,
       sessionLogs: state.sessionLogs,
-      foodLog: state.foodLog,
-      foodHistory: state.foodHistory,
-      customFoods: state.customFoods,
-      profile: state.profile,
+      schedule: scheduleToPersist(getSchedule()),
       exerciseReplacements: state.exerciseReplacements
     };
   }
@@ -2017,10 +1950,7 @@
     state.phase = parsed.phase || parsed.activePhase || "p1"; // activePhase = old buggy key, tolerated for migration
     state.weightLogs = parsed.weightLogs || {};
     state.sessionLogs = parsed.sessionLogs || {};
-    state.foodLog = parsed.foodLog || {};
-    state.foodHistory = parsed.foodHistory || {};
-    state.customFoods = parsed.customFoods || [];
-    state.profile = parsed.profile || null;
+    state.schedule = scheduleFromPersist(parsed.schedule) || cloneDefaultSchedule();
     state.exerciseReplacements = parsed.exerciseReplacements || {};
   }
 
@@ -2109,7 +2039,6 @@
     applyPhaseBackground();
     renderTracker();
     renderWorkouts();
-    renderNutrition();
   }
 
   // ---------------------------------------------------------
@@ -2246,6 +2175,64 @@
     if (pctChange > 0.03) return "improving";
     if (pctChange < -0.03) return "lower";
     return "similar";
+  }
+
+  // ---- Estimated 1-rep max (Epley formula: weight * (1 + reps/30)) ----
+  // Applied to a session's heaviest set. Reps capped at 12 since the
+  // formula gets unreliable for very high-rep sets.
+  function estimateOneRepMax(session) {
+    if (!session || !session.sets || !session.sets.length) return null;
+    var best = 0;
+    session.sets.forEach(function (s) {
+      var w = parseFloat(s.weightKg), r = parseFloat(s.reps);
+      if (isNaN(w) || isNaN(r) || r <= 0) return;
+      var cappedReps = Math.min(r, 12);
+      var est = w * (1 + cappedReps / 30);
+      if (est > best) best = est;
+    });
+    return best > 0 ? Math.round(best * 10) / 10 : null;
+  }
+
+  // ---- Small inline SVG sparkline of top-set weight across recent sessions ----
+  function buildTopSetSparkline(key, maxPoints) {
+    var hist = getSessionHistory(key).slice(0, maxPoints || 8).slice().reverse(); // oldest -> newest
+    if (hist.length < 2) return null;
+    var values = hist.map(function (session) {
+      return Math.max.apply(null, session.sets.map(function (s) { return parseFloat(s.weightKg) || 0; }));
+    });
+    var w = 110, h = 28, pad = 3;
+    var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+    var range = max - min || 1;
+    var stepX = (w - pad * 2) / (values.length - 1);
+    var points = values.map(function (v, i) {
+      var x = pad + i * stepX;
+      var y = h - pad - ((v - min) / range) * (h - pad * 2);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    });
+    var lastUp = values[values.length - 1] >= values[0];
+    var stroke = lastUp ? "#3DDC84" : "#FF6B4A";
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+    svg.classList.add("spark-svg");
+    var polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.setAttribute("points", points.join(" "));
+    polyline.setAttribute("fill", "none");
+    polyline.setAttribute("stroke", stroke);
+    polyline.setAttribute("stroke-width", "1.6");
+    polyline.setAttribute("stroke-linecap", "round");
+    polyline.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(polyline);
+    // Dot on the last point
+    var lastXY = points[points.length - 1].split(",");
+    var dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    dot.setAttribute("cx", lastXY[0]);
+    dot.setAttribute("cy", lastXY[1]);
+    dot.setAttribute("r", "2");
+    dot.setAttribute("fill", stroke);
+    svg.appendChild(dot);
+    return svg;
   }
 
   // =========================================================
@@ -3171,86 +3158,6 @@
     return true;
   }
 
-  // ---- Food logging ----
-  function getTodayFoodList() {
-    var k = foodLogDateKey();
-    return state.foodLog[k] || [];
-  }
-  function addFoodEntry(entry) {
-    var k = foodLogDateKey();
-    if (!state.foodLog[k]) state.foodLog[k] = [];
-    state.foodLog[k].push(entry);
-    saveState();
-  }
-  function deleteFoodEntry(index) {
-    var k = foodLogDateKey();
-    if (!state.foodLog[k]) return;
-    state.foodLog[k].splice(index, 1);
-    saveState();
-  }
-  function resetTodayLog() {
-    var k = foodLogDateKey();
-    delete state.foodLog[k];
-    saveState();
-  }
-  function calculateToday() {
-    var k = foodLogDateKey();
-    var items = state.foodLog[k];
-    if (!items || !items.length) return false;
-    if (!state.foodHistory[k]) state.foodHistory[k] = [];
-    state.foodHistory[k].push(items);
-    delete state.foodLog[k]; // clear working list, ready for a fresh session today if needed
-    saveState();
-    return true;
-  }
-  function deleteFoodDay(dateStr) {
-    delete state.foodHistory[dateStr];
-    saveState();
-  }
-  function deleteFoodSession(dateStr, sessionIdx) {
-    var sessions = state.foodHistory[dateStr];
-    if (!sessions) return;
-    sessions.splice(sessionIdx, 1);
-    if (!sessions.length) delete state.foodHistory[dateStr];
-    saveState();
-  }
-  function computeTotalsFor(list) {
-    var totals = { cal: 0, protein: 0, carbs: 0, fat: 0, water: 0 };
-    (list || []).forEach(function (item) {
-      totals.cal += item.cal || 0;
-      totals.protein += item.protein || 0;
-      totals.carbs += item.carbs || 0;
-      totals.fat += item.fat || 0;
-      totals.water += item.water || 0;
-    });
-    return totals;
-  }
-  function getHistoryDates() {
-    return Object.keys(state.foodHistory)
-      .filter(function (d) { return state.foodHistory[d] && state.foodHistory[d].length; })
-      .sort(function (a, b) { return b.localeCompare(a); }); // newest first
-  }
-  function getDayCombinedTotals(dateStr) {
-    var sessions = state.foodHistory[dateStr] || [];
-    var allItems = [];
-    sessions.forEach(function (s) { allItems = allItems.concat(s); });
-    return computeTotalsFor(allItems);
-  }
-  function computeTotals() {
-    return computeTotalsFor(getTodayFoodList());
-  }
-  function buildVerdict(totals) {
-    var t = getDailyTargets();
-    var parts = [];
-    parts.push(totals.protein >= t.protein ? "protein ✓" : "protein short by " + Math.round(t.protein - totals.protein) + "g");
-    parts.push(totals.carbs >= t.carbs ? "carbs ✓" : "carbs short by " + Math.round(t.carbs - totals.carbs) + "g");
-    parts.push(totals.cal >= t.cal ? "calories ✓" : "calories short by " + Math.round(t.cal - totals.cal) + " kcal");
-    parts.push(totals.water >= t.water ? "water ✓" : "water short by " + (Math.round((t.water - totals.water) / 100) / 10) + "L");
-    var allGood = totals.protein >= t.protein && totals.carbs >= t.carbs && totals.cal >= t.cal && totals.water >= t.water;
-    var prefix = allGood ? "✅ Solid day — " : "⚠️ Not quite there — ";
-    return prefix + parts.join(" · ");
-  }
-
   function getDayLog(key) { return state.log[key] || {}; }
   function getScore(key) {
     var dayLog = getDayLog(key);
@@ -3315,6 +3222,102 @@
   }
 
   // =========================================================
+  // RENDER: Habit Insights (weekly/monthly completion + heatmap)
+  // =========================================================
+  var insightsRange = 7; // UI-only, not persisted — 7 or 30
+
+  function lastNDateKeys(n) {
+    var keys = [];
+    var cursor = new Date();
+    for (var i = 0; i < n; i++) {
+      keys.push(dateKey(cursor));
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return keys; // most recent first
+  }
+
+  function renderInsights() {
+    var keys = lastNDateKeys(insightsRange);
+    var totalPossible = keys.length * HABITS.length;
+    var totalChecked = 0;
+    var daysLogged = 0;
+    var perHabitCount = {};
+    HABITS.forEach(function (h) { perHabitCount[h.key] = 0; });
+
+    keys.forEach(function (k) {
+      var dayLog = state.log[k];
+      if (dayLog && Object.keys(dayLog).length) daysLogged++;
+      totalChecked += getScore(k);
+      HABITS.forEach(function (h) {
+        if (dayLog && dayLog[h.key]) perHabitCount[h.key]++;
+      });
+    });
+
+    var completionRate = totalPossible ? Math.round((totalChecked / totalPossible) * 100) : 0;
+
+    var summaryEl = document.getElementById("insightsSummary");
+    summaryEl.innerHTML = "";
+    var stats = [
+      ["COMPLETION RATE", completionRate + "%"],
+      ["DAYS LOGGED", daysLogged + " / " + keys.length],
+      ["CURRENT STREAK", currentStreak() + " days"]
+    ];
+    stats.forEach(function (s) {
+      var box = document.createElement("div");
+      box.className = "nutri-stat";
+      var l = document.createElement("div"); l.className = "ns-label"; l.textContent = s[0];
+      var v = document.createElement("div"); v.className = "ns-value"; v.textContent = s[1];
+      box.appendChild(l); box.appendChild(v);
+      summaryEl.appendChild(box);
+    });
+
+    var barsEl = document.getElementById("insightsHabitBars");
+    barsEl.innerHTML = "";
+    HABITS.forEach(function (h) {
+      var pct = keys.length ? Math.round((perHabitCount[h.key] / keys.length) * 100) : 0;
+      var row = document.createElement("div");
+      row.className = "insight-bar-row";
+      var label = document.createElement("div");
+      label.className = "insight-bar-label";
+      label.innerHTML = "<span>" + h.icon + "</span><span>" + h.label + "</span>";
+      var track = document.createElement("div");
+      track.className = "insight-bar-track";
+      var fill = document.createElement("div");
+      fill.className = "insight-bar-fill";
+      fill.style.width = pct + "%";
+      track.appendChild(fill);
+      var pctEl = document.createElement("div");
+      pctEl.className = "insight-bar-pct";
+      pctEl.textContent = pct + "%";
+      row.appendChild(label); row.appendChild(track); row.appendChild(pctEl);
+      barsEl.appendChild(row);
+    });
+
+    var heatEl = document.getElementById("insightsHeatmap");
+    heatEl.innerHTML = "";
+    // Pad so the grid lines up with weekday columns (Sun-Sat), oldest first.
+    var heatDays = lastNDateKeys(28).slice().reverse(); // oldest -> newest
+    var firstDow = new Date(heatDays[0] + "T00:00:00").getDay();
+    for (var p = 0; p < firstDow; p++) {
+      var pad = document.createElement("div");
+      pad.className = "heatmap-cell empty";
+      heatEl.appendChild(pad);
+    }
+    heatDays.forEach(function (k) {
+      var cell = document.createElement("div");
+      cell.className = "heatmap-cell";
+      var dayLog = state.log[k];
+      if (dayLog && Object.keys(dayLog).length) {
+        cell.style.background = dotColorFor(getScore(k));
+        cell.title = k + " — " + getScore(k) + "/" + HABITS.length;
+      } else {
+        cell.title = k + " — no log";
+      }
+      heatEl.appendChild(cell);
+    });
+  }
+
+  // =========================================================
   // RENDER: Top tabs
   // =========================================================
   function switchTab(tab) {
@@ -3326,8 +3329,6 @@
       v.classList.toggle("active", v.id === "view-" + tab);
     });
     if (tab === "workouts") renderWorkouts();
-    if (tab === "nutrition") renderNutrition();
-    if (tab === "foodlog") renderFoodLog();
   }
 
   // =========================================================
@@ -3459,30 +3460,235 @@
       gymCard.style.display = "none";
     }
 
+    renderSchedule();
+    renderInsights();
+  }
+
+  // =========================================================
+  // RENDER: Daily Schedule (fully editable)
+  // =========================================================
+  var scheduleEditMode = false; // UI-only, not persisted
+
+  function getSchedule() {
+    if (!state.schedule || !state.schedule.length) state.schedule = cloneDefaultSchedule();
+    return state.schedule;
+  }
+
+  // ---- "What time block is it right now?" ----
+  // Schedule times are free-typed by the user ("8:00-8:30", "1:00 PM", "11:00-1:00 PM")
+  // and don't always carry an explicit AM/PM on both ends of a range. We resolve
+  // ambiguous tokens by picking whichever AM/PM keeps the time-of-day moving
+  // forward relative to the previous token — this matches how a person reading
+  // the schedule top-to-bottom would naturally interpret it.
+  function parseTimeToken(token, prevMinutes) {
+    if (!token) return null;
+    var m = token.trim().match(/^(\d{1,2}):?(\d{2})?\s*(AM|PM|am|pm)?$/);
+    if (!m) return null;
+    var h = parseInt(m[1], 10);
+    var min = m[2] ? parseInt(m[2], 10) : 0;
+    if (isNaN(h) || h > 12) return null;
+    var explicitAp = m[3] ? m[3].toUpperCase() : null;
+    function toMinutes(hh, ap) {
+      var hh24 = hh % 12;
+      if (ap === "PM") hh24 += 12;
+      return hh24 * 60 + min;
+    }
+    if (explicitAp) return toMinutes(h, explicitAp);
+    var amVal = toMinutes(h, "AM");
+    var pmVal = toMinutes(h, "PM");
+    if (prevMinutes === null) return h < 7 ? pmVal : amVal;
+    var forward = [amVal, pmVal].filter(function (v) { return v >= prevMinutes; });
+    return forward.length ? Math.min.apply(null, forward) : Math.min(amVal, pmVal);
+  }
+
+  function parseScheduleTimes(schedule) {
+    var running = null;
+    return schedule.map(function (row) {
+      var parts = (row[0] || "").split("-");
+      var start = parseTimeToken(parts[0], running);
+      var end = parts[1] ? parseTimeToken(parts[1], start !== null ? start : running) : start;
+      if (start !== null) running = start;
+      if (end !== null) running = end;
+      return { startMin: start, endMin: end };
+    });
+  }
+
+  function getCurrentScheduleBlockIndex() {
+    var schedule = getSchedule();
+    var blocks = parseScheduleTimes(schedule);
+    var now = new Date();
+    var nowMin = now.getHours() * 60 + now.getMinutes();
+    for (var i = 0; i < blocks.length; i++) {
+      var b = blocks[i];
+      if (b.startMin === null) continue;
+      if (b.endMin !== null && b.endMin !== b.startMin) {
+        if (nowMin >= b.startMin && nowMin < b.endMin) return i;
+      } else if (Math.abs(nowMin - b.startMin) <= 15) {
+        return i; // point-in-time entries (Wake up, Sleep) get a 15-min window
+      }
+    }
+    return null;
+  }
+
+  // ---- Optional browser-notification reminders when a new block starts ----
+  var scheduleRemindersOn = false;
+  var lastNotifiedBlockIndex = null;
+
+  function toggleScheduleReminders() {
+    if (scheduleRemindersOn) {
+      scheduleRemindersOn = false;
+      renderSchedule();
+      return;
+    }
+    if (!("Notification" in window)) { alert("This browser doesn't support notifications."); return; }
+    if (Notification.permission === "granted") {
+      scheduleRemindersOn = true;
+      lastNotifiedBlockIndex = getCurrentScheduleBlockIndex();
+      renderSchedule();
+    } else if (Notification.permission === "denied") {
+      alert("Notifications are blocked for this site — enable them in your browser's site settings to use reminders.");
+    } else {
+      Notification.requestPermission().then(function (perm) {
+        if (perm === "granted") {
+          scheduleRemindersOn = true;
+          lastNotifiedBlockIndex = getCurrentScheduleBlockIndex();
+        }
+        renderSchedule();
+      });
+    }
+  }
+
+  function checkScheduleReminder() {
+    if (!scheduleRemindersOn) return;
+    var idx = getCurrentScheduleBlockIndex();
+    if (idx !== null && idx !== lastNotifiedBlockIndex) {
+      lastNotifiedBlockIndex = idx;
+      var row = getSchedule()[idx];
+      if (row && Notification.permission === "granted") {
+        new Notification("Time block started", { body: row[0] + " — " + row[1] });
+      }
+    }
+  }
+
+  function renderSchedule() {
     var schedEl = document.getElementById("scheduleList");
+    var addBtn = document.getElementById("scheduleAddBtn");
+    var editBtn = document.getElementById("scheduleEditBtn");
+    var notifyBtn = document.getElementById("scheduleNotifyBtn");
+    editBtn.textContent = scheduleEditMode ? "Done" : "Edit";
+    addBtn.style.display = scheduleEditMode ? "block" : "none";
+    notifyBtn.textContent = scheduleRemindersOn ? "🔔 Reminders on" : "🔔 Remind me";
+    notifyBtn.classList.toggle("on", scheduleRemindersOn);
+
+    var schedule = getSchedule();
+    var currentIdx = scheduleEditMode ? null : getCurrentScheduleBlockIndex();
     schedEl.innerHTML = "";
-    SCHEDULE.forEach(function (row) {
+    schedule.forEach(function (row, idx) {
       var time = row[0], activity = row[1], note = row[2];
       var div = document.createElement("div");
-      div.className = "sched-row";
-      var timeDiv = document.createElement("div");
-      timeDiv.className = "sched-time mono";
-      timeDiv.textContent = time;
-      var rightDiv = document.createElement("div");
-      var actDiv = document.createElement("div");
-      actDiv.className = "sched-activity";
-      actDiv.textContent = activity;
-      rightDiv.appendChild(actDiv);
-      if (note) {
-        var noteDiv = document.createElement("div");
-        noteDiv.className = "sched-note";
-        noteDiv.textContent = note;
-        rightDiv.appendChild(noteDiv);
+      div.className = "sched-row" + (scheduleEditMode ? " sched-row-edit" : "") + (idx === currentIdx ? " sched-row-current" : "");
+
+      if (!scheduleEditMode) {
+        var timeDiv = document.createElement("div");
+        timeDiv.className = "sched-time mono";
+        timeDiv.textContent = time;
+        var rightDiv = document.createElement("div");
+        var actDiv = document.createElement("div");
+        actDiv.className = "sched-activity";
+        actDiv.textContent = activity;
+        if (idx === currentIdx) {
+          var chip = document.createElement("span");
+          chip.className = "sched-now-chip";
+          chip.textContent = "NOW";
+          actDiv.appendChild(chip);
+        }
+        rightDiv.appendChild(actDiv);
+        if (note) {
+          var noteDiv = document.createElement("div");
+          noteDiv.className = "sched-note";
+          noteDiv.textContent = note;
+          rightDiv.appendChild(noteDiv);
+        }
+        div.appendChild(timeDiv);
+        div.appendChild(rightDiv);
+      } else {
+        var timeInput = document.createElement("input");
+        timeInput.className = "sched-edit-input sched-edit-time mono";
+        timeInput.value = time;
+        timeInput.placeholder = "Time";
+        timeInput.onchange = function () { updateScheduleRow(idx, 0, timeInput.value); };
+
+        var fields = document.createElement("div");
+        fields.className = "sched-edit-fields";
+        var actInput = document.createElement("input");
+        actInput.className = "sched-edit-input";
+        actInput.value = activity;
+        actInput.placeholder = "Activity";
+        actInput.onchange = function () { updateScheduleRow(idx, 1, actInput.value); };
+        var noteInput = document.createElement("input");
+        noteInput.className = "sched-edit-input sched-edit-note";
+        noteInput.value = note || "";
+        noteInput.placeholder = "Note (optional)";
+        noteInput.onchange = function () { updateScheduleRow(idx, 2, noteInput.value); };
+        fields.appendChild(actInput);
+        fields.appendChild(noteInput);
+
+        var controls = document.createElement("div");
+        controls.className = "sched-edit-controls";
+        var upBtn = document.createElement("button");
+        upBtn.className = "sched-move-btn"; upBtn.textContent = "↑"; upBtn.title = "Move up";
+        upBtn.disabled = idx === 0;
+        upBtn.onclick = function () { moveScheduleRow(idx, -1); };
+        var downBtn = document.createElement("button");
+        downBtn.className = "sched-move-btn"; downBtn.textContent = "↓"; downBtn.title = "Move down";
+        downBtn.disabled = idx === schedule.length - 1;
+        downBtn.onclick = function () { moveScheduleRow(idx, 1); };
+        var delBtn = document.createElement("button");
+        delBtn.className = "sched-del-btn"; delBtn.textContent = "✕"; delBtn.title = "Remove";
+        delBtn.onclick = function () { deleteScheduleRow(idx); };
+        controls.appendChild(upBtn); controls.appendChild(downBtn); controls.appendChild(delBtn);
+
+        div.appendChild(timeInput);
+        div.appendChild(fields);
+        div.appendChild(controls);
       }
-      div.appendChild(timeDiv);
-      div.appendChild(rightDiv);
       schedEl.appendChild(div);
     });
+  }
+
+  function updateScheduleRow(idx, fieldIdx, value) {
+    var schedule = getSchedule();
+    if (!schedule[idx]) return;
+    schedule[idx][fieldIdx] = value;
+    saveState();
+  }
+  function moveScheduleRow(idx, dir) {
+    var schedule = getSchedule();
+    var target = idx + dir;
+    if (target < 0 || target >= schedule.length) return;
+    var tmp = schedule[idx];
+    schedule[idx] = schedule[target];
+    schedule[target] = tmp;
+    saveState();
+    renderSchedule();
+  }
+  function deleteScheduleRow(idx) {
+    var schedule = getSchedule();
+    schedule.splice(idx, 1);
+    saveState();
+    renderSchedule();
+  }
+  function addScheduleRow() {
+    var schedule = getSchedule();
+    schedule.push(["New time", "New activity", ""]);
+    saveState();
+    renderSchedule();
+  }
+  function resetSchedule() {
+    if (!confirm("Reset the daily schedule back to the default? This can't be undone.")) return;
+    state.schedule = cloneDefaultSchedule();
+    saveState();
+    renderSchedule();
   }
 
   // =========================================================
@@ -3826,6 +4032,64 @@
   // and note. Shows a compact summary of the last session plus a trend
   // badge, with an expandable panel to log today's sets and a separate
   // expandable panel to browse/delete past sessions.
+  // ---- Rest timer (between-set countdown, UI-only, not persisted) ----
+  var restTimerState = {}; // key -> { endTime, intervalId, displayEl }
+
+  function formatRestTime(totalSeconds) {
+    var m = Math.floor(totalSeconds / 60);
+    var s = totalSeconds % 60;
+    return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function tickRestTimer(key) {
+    var st = restTimerState[key];
+    if (!st || !st.displayEl) return;
+    var remaining = Math.max(0, Math.round((st.endTime - Date.now()) / 1000));
+    if (remaining <= 0) {
+      st.displayEl.textContent = "Rest done";
+      st.displayEl.classList.remove("rest-timer-active");
+      st.displayEl.classList.add("rest-timer-done");
+      if (st.intervalId) clearInterval(st.intervalId);
+      st.intervalId = null;
+      st.endTime = null;
+      try { if ("vibrate" in navigator) navigator.vibrate(200); } catch (e) {}
+      return;
+    }
+    st.displayEl.textContent = formatRestTime(remaining);
+    st.displayEl.classList.add("rest-timer-active");
+    st.displayEl.classList.remove("rest-timer-done");
+  }
+
+  function startRestTimer(key, seconds, displayEl) {
+    if (restTimerState[key] && restTimerState[key].intervalId) clearInterval(restTimerState[key].intervalId);
+    restTimerState[key] = { endTime: Date.now() + seconds * 1000, intervalId: null, displayEl: displayEl };
+    tickRestTimer(key);
+    restTimerState[key].intervalId = setInterval(function () { tickRestTimer(key); }, 1000);
+  }
+
+  function stopRestTimer(key, displayEl) {
+    var st = restTimerState[key];
+    if (st && st.intervalId) clearInterval(st.intervalId);
+    restTimerState[key] = { endTime: null, intervalId: null, displayEl: displayEl };
+    if (displayEl) {
+      displayEl.textContent = "--:--";
+      displayEl.classList.remove("rest-timer-active", "rest-timer-done");
+    }
+  }
+
+  // Re-attaches a running timer's display to a freshly-rendered DOM node
+  // (the logger panel is rebuilt on every renderWorkouts() call).
+  function resumeRestTimerDisplay(key, displayEl) {
+    var st = restTimerState[key];
+    if (!st || !st.endTime) return;
+    st.displayEl = displayEl;
+    if (st.intervalId) clearInterval(st.intervalId);
+    tickRestTimer(key);
+    if (st.endTime && st.endTime > Date.now()) {
+      st.intervalId = setInterval(function () { tickRestTimer(key); }, 1000);
+    }
+  }
+
   function renderSetLoggerCell(c3, key, repRange, exerciseName) {
     var cell = document.createElement("div");
     cell.className = "set-logger-cell";
@@ -3861,6 +4125,14 @@
         painBadge.textContent = "\u26a0 pain flagged";
         summary.appendChild(painBadge);
       }
+      var estRM = estimateOneRepMax(lastSession);
+      if (estRM) {
+        var rmBadge = document.createElement("span");
+        rmBadge.className = "rm-badge";
+        rmBadge.textContent = "est. 1RM " + estRM + "kg";
+        rmBadge.title = "Estimated one-rep max from this session's heaviest set (Epley formula)";
+        summary.appendChild(rmBadge);
+      }
     } else {
       var noneYet = document.createElement("span");
       noneYet.className = "logger-last mono";
@@ -3868,6 +4140,18 @@
       summary.appendChild(noneYet);
     }
     cell.appendChild(summary);
+
+    var sparkline = buildTopSetSparkline(key);
+    if (sparkline) {
+      var sparkWrap = document.createElement("div");
+      sparkWrap.className = "spark-wrap";
+      var sparkLabel = document.createElement("span");
+      sparkLabel.className = "spark-label";
+      sparkLabel.textContent = "top set";
+      sparkWrap.appendChild(sparkLabel);
+      sparkWrap.appendChild(sparkline);
+      cell.appendChild(sparkWrap);
+    }
 
     // Stage 3 — local progression engine badge + explanation. Runs on
     // every render; it's a cheap pure function over already-loaded history.
@@ -3976,6 +4260,32 @@
         setInputs.forEach(function (si) { if (!si.weight.value) si.weight.value = w; });
       };
       panel.appendChild(copyBtn);
+
+      // Rest timer — simple countdown between sets, no persistence needed
+      var timerRow = document.createElement("div");
+      timerRow.className = "rest-timer-row";
+      var timerLabel = document.createElement("span");
+      timerLabel.className = "logger-set-label mono";
+      timerLabel.textContent = "Rest";
+      timerRow.appendChild(timerLabel);
+      var timerDisplay = document.createElement("span");
+      timerDisplay.className = "rest-timer-display";
+      timerDisplay.textContent = "--:--";
+      [60, 90, 120, 180].forEach(function (secs) {
+        var tBtn = document.createElement("button");
+        tBtn.className = "rest-timer-btn";
+        tBtn.textContent = secs < 60 ? secs + "s" : (secs / 60) + (secs % 60 === 0 ? "m" : "m30");
+        tBtn.onclick = function () { startRestTimer(key, secs, timerDisplay); };
+        timerRow.appendChild(tBtn);
+      });
+      var stopTBtn = document.createElement("button");
+      stopTBtn.className = "rest-timer-btn rest-timer-stop";
+      stopTBtn.textContent = "stop";
+      stopTBtn.onclick = function () { stopRestTimer(key, timerDisplay); };
+      timerRow.appendChild(stopTBtn);
+      timerRow.appendChild(timerDisplay);
+      panel.appendChild(timerRow);
+      resumeRestTimerDisplay(key, timerDisplay);
 
       // RIR selector
       var rirRow = document.createElement("div");
@@ -4151,7 +4461,7 @@
         var hist = getHistory(key);
 
         var row = document.createElement("tr");
-        var c1 = document.createElement("td"); c1.className = "ex-name";
+        var c1 = document.createElement("td"); c1.className = "ex-name"; c1.dataset.label = "Exercise";
         // Classification (demoable? which muscle group?) always follows the
         // SLOT's original exercise — swapping to an equivalent movement
         // doesn't change what muscle group the slot is training.
@@ -4200,9 +4510,9 @@
           }
           c1.appendChild(swapWrap);
         }
-        var c2 = document.createElement("td"); c2.textContent = planStr;
+        var c2 = document.createElement("td"); c2.textContent = planStr; c2.dataset.label = "Sets x Reps";
 
-        var c3 = document.createElement("td");
+        var c3 = document.createElement("td"); c3.dataset.label = "Log";
         var repRange = parseSetsRepRange(planStr);
         if (repRange) {
           renderSetLoggerCell(c3, key, repRange, effectiveName);
@@ -4212,6 +4522,7 @@
 
         var c4 = document.createElement("td");
         c4.className = "muscle-cell";
+        c4.dataset.label = "Muscle";
         var muscleInner = document.createElement("div");
         muscleInner.className = "muscle-cell-inner";
         if (isDemoable) {
@@ -4232,293 +4543,6 @@
     }
 
     renderWeeklyReview();
-  }
-
-  // =========================================================
-  // RENDER: Nutrition view
-  // =========================================================
-  function renderNutrition() {
-    var nutriTitleEl = document.getElementById("nutriPhaseTitle");
-    nutriTitleEl.innerHTML = "";
-    var phaseRow = document.createElement("div");
-    phaseRow.className = "day-pill-row";
-    phaseRow.style.marginBottom = "10px";
-    PHASES.forEach(function (p) {
-      var pill = document.createElement("span");
-      pill.className = "day-pill" + (state.phase === p.key ? " active" : "");
-      pill.textContent = p.pLabel;
-      pill.onclick = function () { setPhase(p.key); };
-      phaseRow.appendChild(pill);
-    });
-    nutriTitleEl.appendChild(phaseRow);
-    var titleText = document.createElement("div");
-    var n = NUTRITION[state.phase];
-    titleText.textContent = n.title;
-    nutriTitleEl.appendChild(titleText);
-
-    document.getElementById("nutriPhaseGoal").textContent = n.goal;
-
-    var statsEl = document.getElementById("nutriStats");
-    statsEl.innerHTML = "";
-    n.stats.forEach(function (s) {
-      var box = document.createElement("div");
-      box.className = "nutri-stat";
-      var l = document.createElement("div"); l.className = "ns-label"; l.textContent = s[0].toUpperCase();
-      var v = document.createElement("div"); v.className = "ns-value"; v.textContent = s[1];
-      box.appendChild(l); box.appendChild(v);
-      statsEl.appendChild(box);
-    });
-
-    var mealBody = document.getElementById("nutriMealBody");
-    mealBody.innerHTML = "";
-    n.meals.forEach(function (m) {
-      var row = document.createElement("tr");
-      var c1 = document.createElement("td"); c1.className = "ex-name"; c1.textContent = m[0];
-      var c2 = document.createElement("td"); c2.textContent = m[1];
-      row.appendChild(c1); row.appendChild(c2);
-      mealBody.appendChild(row);
-    });
-
-    document.getElementById("proteinNote").textContent = n.proteinNote;
-    var proteinBody = document.getElementById("proteinTableBody");
-    proteinBody.innerHTML = "";
-    n.proteinDosing.forEach(function (p) {
-      var row = document.createElement("tr");
-      var c1 = document.createElement("td"); c1.className = "ex-name"; c1.textContent = p[0];
-      var c2 = document.createElement("td"); c2.textContent = p[1];
-      var c3 = document.createElement("td"); c3.textContent = p[2];
-      row.appendChild(c1); row.appendChild(c2); row.appendChild(c3);
-      proteinBody.appendChild(row);
-    });
-
-    var localBody = document.getElementById("localProteinBody");
-    if (!localBody.dataset.built) {
-      LOCAL_PROTEIN_FOODS.forEach(function (f) {
-        var row = document.createElement("tr");
-        var c1 = document.createElement("td"); c1.className = "ex-name"; c1.textContent = f[0];
-        var c2 = document.createElement("td"); c2.textContent = f[1];
-        var c3 = document.createElement("td"); c3.textContent = f[2];
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3);
-        localBody.appendChild(row);
-      });
-      localBody.dataset.built = "true";
-    }
-  }
-
-  // =========================================================
-  // RENDER: Food Log view
-  // =========================================================
-  function populateFoodSelect() {
-    var sel = document.getElementById("foodSelect");
-    // Always rebuild if custom foods might have changed
-    sel.innerHTML = "";
-    delete sel.dataset.built;
-    FOOD_DB.forEach(function (f, i) {
-      var opt = document.createElement("option");
-      opt.value = "builtin:" + i;
-      opt.textContent = f[0];
-      sel.appendChild(opt);
-    });
-    state.customFoods.forEach(function (f, i) {
-      var opt = document.createElement("option");
-      opt.value = "custom:" + i;
-      opt.textContent = "★ " + f.name + " (per " + f.unit + ")";
-      sel.appendChild(opt);
-    });
-    sel.dataset.built = "true";
-    updateFoodUnitLabel();
-  }
-  function getFoodFromSelect() {
-    var sel = document.getElementById("foodSelect");
-    var val = sel.value;
-    if (!val) return null;
-    if (val.startsWith("builtin:")) {
-      var idx = parseInt(val.split(":")[1], 10);
-      var f = FOOD_DB[idx];
-      return { name: f[0], unit: f[1], cal: f[2], protein: f[3], carbs: f[4], fat: f[5], water: f[6] };
-    } else {
-      var idx2 = parseInt(val.split(":")[1], 10);
-      return state.customFoods[idx2];
-    }
-  }
-  function updateFoodUnitLabel() {
-    var f = getFoodFromSelect();
-    document.getElementById("foodUnitLabel").textContent = f ? f.unit : "serving(s)";
-  }
-
-  function renderProfileForm() {
-    var p = state.profile;
-    document.getElementById("profileHeight").value = p ? p.heightCm : "";
-    document.getElementById("profileWeight").value = p ? p.weightKg : "";
-    document.getElementById("profileAge").value = p ? p.age : "";
-    document.getElementById("profileGender").value = p ? p.gender : "male";
-    document.getElementById("profileActivity").value = p ? p.activityLevel : "moderate";
-    document.getElementById("profileGoal").value = p ? p.goal : "bulk";
-  }
-
-  function saveProfileFromForm() {
-    var heightCm = parseFloat(document.getElementById("profileHeight").value);
-    var weightKg = parseFloat(document.getElementById("profileWeight").value);
-    var age = parseInt(document.getElementById("profileAge").value, 10);
-    if (!heightCm || !weightKg || !age) {
-      alert("Please fill in height, weight, and age so I can calculate your targets.");
-      return false;
-    }
-    state.profile = {
-      heightCm: heightCm,
-      weightKg: weightKg,
-      age: age,
-      gender: document.getElementById("profileGender").value,
-      activityLevel: document.getElementById("profileActivity").value,
-      goal: document.getElementById("profileGoal").value
-    };
-    saveState();
-    return true;
-  }
-
-  function renderFoodLog() {
-    // Gate the whole food log behind a one-time profile setup —
-    // targets can't be calculated without height/weight/age/etc.
-    var hasProfile = !!state.profile;
-    document.getElementById("profileSetupCard").style.display = hasProfile ? "none" : "block";
-    document.getElementById("foodlogMain").style.display = hasProfile ? "block" : "none";
-    renderProfileForm();
-    if (!hasProfile) return;
-
-    populateFoodSelect();
-
-    var today = new Date();
-    document.getElementById("foodlogDateLabel").textContent =
-      today.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
-
-    var totals = computeTotals();
-    var t = getDailyTargets();
-
-    document.getElementById("foodlogTargetsSub").textContent =
-      "Daily targets: " + t.cal.toLocaleString() + " kcal · " + t.protein + "g protein · " +
-      t.carbs + "g carbs · " + t.fat + "g fat · " + (Math.round(t.water / 100) / 10) + "L water";
-
-    var summaryEl = document.getElementById("foodlogSummary");
-    summaryEl.innerHTML = "";
-    var stats = [
-      ["CALORIES", Math.round(totals.cal) + " / " + t.cal, "kcal"],
-      ["PROTEIN", Math.round(totals.protein) + " / " + t.protein, "g"],
-      ["CARBS", Math.round(totals.carbs) + " / " + t.carbs, "g"],
-      ["FAT", Math.round(totals.fat) + " / " + t.fat, "g"],
-      ["WATER", (Math.round(totals.water / 100) / 10) + " / " + (t.water / 1000), "L"]
-    ];
-    var targetVals = [t.cal, t.protein, t.carbs, t.fat, t.water];
-    var actualVals = [totals.cal, totals.protein, totals.carbs, totals.fat, totals.water];
-    stats.forEach(function (s, i) {
-      var box = document.createElement("div");
-      box.className = "nutri-stat" + (actualVals[i] >= targetVals[i] ? " over" : " under");
-      var l = document.createElement("div"); l.className = "ns-label"; l.textContent = s[0];
-      var v = document.createElement("div"); v.className = "ns-value"; v.textContent = s[1];
-      var sub = document.createElement("div"); sub.className = "ns-sub"; sub.textContent = s[2];
-      box.appendChild(l); box.appendChild(v); box.appendChild(sub);
-      summaryEl.appendChild(box);
-    });
-
-    document.getElementById("foodlogVerdict").textContent = buildVerdict(totals);
-
-    var listEl = document.getElementById("foodLogList");
-    listEl.innerHTML = "";
-    var items = getTodayFoodList();
-
-    document.getElementById("calculateBtn").disabled = !items.length;
-
-    if (!items.length) {
-      var empty = document.createElement("div");
-      empty.className = "log-empty";
-      empty.textContent = "Nothing logged yet today.";
-      listEl.appendChild(empty);
-    } else {
-      items.forEach(function (item, idx) {
-        var row = document.createElement("div");
-        row.className = "log-item";
-        var left = document.createElement("div");
-        var nameEl = document.createElement("div");
-        nameEl.className = "log-item-name";
-        nameEl.textContent = item.name;
-        var macroEl = document.createElement("div");
-        macroEl.className = "log-item-macro";
-        macroEl.textContent = Math.round(item.cal) + " kcal · P " + Math.round(item.protein) + "g · C " + Math.round(item.carbs) + "g · F " + Math.round(item.fat) + "g" + (item.water ? " · " + Math.round(item.water) + "ml water" : "");
-        left.appendChild(nameEl); left.appendChild(macroEl);
-
-        var delBtn = document.createElement("button");
-        delBtn.className = "log-item-del";
-        delBtn.textContent = "remove";
-        delBtn.onclick = function () { deleteFoodEntry(idx); renderFoodLog(); };
-
-        row.appendChild(left); row.appendChild(delBtn);
-        listEl.appendChild(row);
-      });
-    }
-
-    // History — calculated/finalized days
-    var histEl = document.getElementById("foodHistoryList");
-    histEl.innerHTML = "";
-    var histDates = getHistoryDates();
-    if (!histDates.length) {
-      var histEmpty = document.createElement("div");
-      histEmpty.className = "log-empty";
-      histEmpty.textContent = "No calculated days yet — hit Calculate above once you're done logging for the day.";
-      histEl.appendChild(histEmpty);
-    } else {
-      histDates.forEach(function (d) {
-        var dayTotals = getDayCombinedTotals(d);
-        var sessions = state.foodHistory[d];
-        var dayDiv = document.createElement("div");
-        dayDiv.className = "hist-day";
-
-        var head = document.createElement("div");
-        head.className = "hist-day-head";
-        var dateLabel = document.createElement("div");
-        dateLabel.className = "hist-day-date";
-        var dObj = new Date(d + "T00:00:00");
-        dateLabel.textContent = dObj.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }) +
-          (sessions.length > 1 ? " (" + sessions.length + " sessions)" : "");
-        var delDayBtn = document.createElement("button");
-        delDayBtn.className = "hist-day-del";
-        delDayBtn.textContent = "delete day";
-        delDayBtn.onclick = function () { deleteFoodDay(d); renderFoodLog(); };
-        head.appendChild(dateLabel); head.appendChild(delDayBtn);
-
-        var macros = document.createElement("div");
-        macros.className = "hist-day-macros";
-        macros.innerHTML =
-          "<span><b>" + Math.round(dayTotals.cal) + "</b> kcal</span>" +
-          "<span><b>" + Math.round(dayTotals.protein) + "g</b> protein</span>" +
-          "<span><b>" + Math.round(dayTotals.carbs) + "g</b> carbs</span>" +
-          "<span><b>" + Math.round(dayTotals.fat) + "g</b> fat</span>" +
-          "<span><b>" + (Math.round(dayTotals.water / 100) / 10) + "L</b> water</span>";
-
-        var verdict = document.createElement("div");
-        verdict.className = "hist-verdict";
-        verdict.textContent = buildVerdict(dayTotals);
-
-        dayDiv.appendChild(head);
-        dayDiv.appendChild(macros);
-        dayDiv.appendChild(verdict);
-
-        if (sessions.length > 1) {
-          var sessRow = document.createElement("div");
-          sessRow.className = "hist-sessions";
-          sessions.forEach(function (sessionItems, sIdx) {
-            var sTotals = computeTotalsFor(sessionItems);
-            var sChip = document.createElement("span");
-            sChip.className = "hist-session-chip";
-            sChip.textContent = "Session " + (sIdx + 1) + ": " + Math.round(sTotals.cal) + " kcal ✕";
-            sChip.title = "Click to remove this session";
-            sChip.onclick = function () { deleteFoodSession(d, sIdx); renderFoodLog(); };
-            sessRow.appendChild(sChip);
-          });
-          dayDiv.appendChild(sessRow);
-        }
-
-        histEl.appendChild(dayDiv);
-      });
-    }
   }
 
   // ---- Init ----
@@ -4648,97 +4672,31 @@
     btn.onclick = function () { switchTab(btn.dataset.tab); };
   });
 
-  document.getElementById("foodSelect").addEventListener("change", updateFoodUnitLabel);
-
-  document.getElementById("saveProfileBtn").onclick = function () {
-    if (saveProfileFromForm()) renderFoodLog();
+  document.getElementById("scheduleEditBtn").onclick = function () {
+    scheduleEditMode = !scheduleEditMode;
+    renderSchedule();
   };
-  document.getElementById("editProfileBtn").onclick = function () {
-    document.getElementById("profileSetupCard").style.display = "block";
-    document.getElementById("foodlogMain").style.display = "none";
-    renderProfileForm();
-  };
+  document.getElementById("scheduleAddBtn").onclick = function () { addScheduleRow(); };
+  document.getElementById("scheduleResetBtn").onclick = function () { resetSchedule(); };
+  document.getElementById("scheduleNotifyBtn").onclick = function () { toggleScheduleReminders(); };
 
-  document.getElementById("resetTodayBtn").onclick = function () {
-    resetTodayLog();
-    renderFoodLog();
-  };
-
-  document.getElementById("calculateBtn").onclick = function () {
-    var ok = calculateToday();
-    if (ok) renderFoodLog();
-  };
-
-  document.querySelectorAll("#foodModeToggle .day-pill").forEach(function (pill) {
+  document.querySelectorAll("#insightsRangeToggle .day-pill").forEach(function (pill) {
     pill.onclick = function () {
-      state.foodMode = pill.dataset.mode;
-      document.querySelectorAll("#foodModeToggle .day-pill").forEach(function (p) {
+      insightsRange = parseInt(pill.dataset.range, 10);
+      document.querySelectorAll("#insightsRangeToggle .day-pill").forEach(function (p) {
         p.classList.toggle("active", p === pill);
       });
-      document.getElementById("foodListMode").style.display = state.foodMode === "list" ? "block" : "none";
-      document.getElementById("foodCustomMode").style.display = state.foodMode === "custom" ? "block" : "none";
+      renderInsights();
     };
   });
 
-  document.getElementById("addFromListBtn").onclick = function () {
-    var f = getFoodFromSelect();
-    if (!f) return;
-    var qty = parseFloat(document.getElementById("foodQty").value);
-    if (isNaN(qty) || qty <= 0) qty = 1;
-    var displayName = f.name.replace(/, 1 .*$/, "").replace(/^★ /, "");
-    addFoodEntry({
-      name: displayName + " (" + qty + " " + f.unit + ")",
-      cal: f.cal * qty,
-      protein: f.protein * qty,
-      carbs: f.carbs * qty,
-      fat: f.fat * qty,
-      water: f.water * qty
-    });
-    document.getElementById("foodQty").value = "1";
-    renderFoodLog();
-  };
-
-  document.getElementById("addCustomBtn").onclick = function () {
-    var name = document.getElementById("customName").value.trim();
-    if (!name) return;
-    var qty = parseFloat(document.getElementById("customQty").value) || 1;
-    var unit = document.getElementById("customUnit").value;
-    // Macros entered by user are for the qty entered — normalize to per-1-unit
-    var calPerUnit   = (parseFloat(document.getElementById("customCal").value)     || 0) / qty;
-    var protPerUnit  = (parseFloat(document.getElementById("customProtein").value) || 0) / qty;
-    var carbPerUnit  = (parseFloat(document.getElementById("customCarbs").value)   || 0) / qty;
-    var fatPerUnit   = (parseFloat(document.getElementById("customFat").value)     || 0) / qty;
-    var waterPerUnit = (parseFloat(document.getElementById("customWater").value)   || 0) / qty;
-
-    // Save normalized per-unit entry to custom food list (for future use from dropdown)
-    state.customFoods.push({
-      name: name,
-      unit: unit,
-      cal: calPerUnit,
-      protein: protPerUnit,
-      carbs: carbPerUnit,
-      fat: fatPerUnit,
-      water: waterPerUnit
-    });
-
-    // Also log this session's qty as a food entry for today
-    addFoodEntry({
-      name: name + " (" + qty + " " + unit + ")",
-      cal: calPerUnit * qty,
-      protein: protPerUnit * qty,
-      carbs: carbPerUnit * qty,
-      fat: fatPerUnit * qty,
-      water: waterPerUnit * qty
-    });
-
-    ["customName", "customCal", "customProtein", "customCarbs", "customFat", "customWater"].forEach(function (id) {
-      document.getElementById(id).value = "";
-    });
-    document.getElementById("customQty").value = "1";
-    saveState();
-    populateFoodSelect(); // rebuild dropdown so custom item appears immediately
-    renderFoodLog();
-  };
+  // Keep the "current time block" highlight and any pending reminder fresh
+  // even if the tab is just left open — a plain render() only happens on
+  // user action otherwise, so the highlight would go stale by the hour.
+  setInterval(function () {
+    if (state.activeTab === "tracker") renderSchedule();
+    checkScheduleReminder();
+  }, 60000);
 })();
 </script>
 </body>
