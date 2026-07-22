@@ -315,7 +315,7 @@
   .wrap {
     max-width: 920px;
     margin: 0 auto;
-    padding: 52px 20px calc(60px + env(safe-area-inset-bottom));
+    padding: calc(52px + env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
   }
 
   /* Header */
@@ -467,6 +467,21 @@
     margin-top: 4px;
   }
   .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .save-session-btn {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    background: linear-gradient(160deg, var(--iron-orange), var(--iron-red));
+    border: none;
+    border-radius: 8px;
+    color: #100A07;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 9px 16px;
+    cursor: pointer;
+    margin: 10px 0 2px;
+  }
+  .save-session-btn:active { transform: scale(0.98); }
   .auth-links {
     display: flex;
     justify-content: space-between;
@@ -701,6 +716,7 @@
   #workoutTable th,
   #workoutTable td {
     box-sizing: border-box;
+    font-size: 13px;
   }
   #workoutTable th:nth-child(1), #workoutTable td:nth-child(1) { width: 34%; }
   #workoutTable th:nth-child(2), #workoutTable td:nth-child(2) { width: 14%; }
@@ -713,7 +729,7 @@
   #workoutTable td:nth-child(4) {
     vertical-align: middle;
   }
-  .ex-name { font-weight: 600; }
+  .ex-name { font-weight: 600; font-size: 13.5px; }
   .table-scroll { overflow-x: auto; }
 
   .weight-cell { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -937,6 +953,41 @@
   }
   .rest-timer-btn:hover { color: var(--iron-orange); border-color: var(--iron-orange); }
   .rest-timer-stop { color: var(--dim); }
+
+  .rest-timer-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #0A0A0A;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    cursor: pointer;
+  }
+  .rest-timer-fullscreen.open { display: flex; }
+  .rtf-label {
+    font-family: 'Oswald', 'Inter', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    color: var(--iron-orange);
+    font-weight: 600;
+  }
+  .rtf-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 88px;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .rest-timer-fullscreen.rtf-done .rtf-time { color: var(--green); }
+  .rtf-hint {
+    font-size: 12px;
+    color: var(--dim);
+    margin-top: 4px;
+  }
 
   .logger-panel {
     margin-top: 8px;
@@ -1240,7 +1291,7 @@
     .ai-panel-input { font-size: 16px; }
 
     /* General tightening so cards use the full narrow width well */
-    .wrap { padding: 20px 12px calc(40px + env(safe-area-inset-bottom)); }
+    .wrap { padding: calc(20px + env(safe-area-inset-top)) 12px calc(40px + env(safe-area-inset-bottom)); }
     .card { padding: 14px; border-radius: 12px; }
     .card-title { font-size: 15px; }
     .top-tabs { gap: 2px; margin-bottom: 16px; }
@@ -1596,6 +1647,13 @@
     </div>
   </div>
 
+</div>
+
+<!-- ============ Full-screen rest timer overlay ============ -->
+<div class="rest-timer-fullscreen" id="restTimerFullscreen">
+  <div class="rtf-label">REST</div>
+  <div class="rtf-time" id="rtfTime">00:00</div>
+  <div class="rtf-hint">tap anywhere to stop</div>
 </div>
 
 <script type="module">
@@ -4034,6 +4092,9 @@
   // expandable panel to browse/delete past sessions.
   // ---- Rest timer (between-set countdown, UI-only, not persisted) ----
   var restTimerState = {}; // key -> { endTime, intervalId, displayEl }
+  var restTimerFullscreenKey = null; // key currently shown in the full-screen overlay
+  var rtfEl = document.getElementById("restTimerFullscreen");
+  var rtfTimeEl = document.getElementById("rtfTime");
 
   function formatRestTime(totalSeconds) {
     var m = Math.floor(totalSeconds / 60);
@@ -4041,10 +4102,21 @@
     return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
   }
 
+  function closeRestTimerFullscreen() {
+    restTimerFullscreenKey = null;
+    rtfEl.classList.remove("open", "rtf-done");
+  }
+
+  rtfEl.addEventListener("click", function () {
+    if (restTimerFullscreenKey) stopRestTimer(restTimerFullscreenKey);
+    closeRestTimerFullscreen();
+  });
+
   function tickRestTimer(key) {
     var st = restTimerState[key];
     if (!st || !st.displayEl) return;
     var remaining = Math.max(0, Math.round((st.endTime - Date.now()) / 1000));
+    var isFullscreen = restTimerFullscreenKey === key;
     if (remaining <= 0) {
       st.displayEl.textContent = "Rest done";
       st.displayEl.classList.remove("rest-timer-active");
@@ -4053,16 +4125,27 @@
       st.intervalId = null;
       st.endTime = null;
       try { if ("vibrate" in navigator) navigator.vibrate(200); } catch (e) {}
+      if (isFullscreen) {
+        rtfTimeEl.textContent = "00:00";
+        rtfEl.classList.add("rtf-done");
+        setTimeout(function () {
+          if (restTimerFullscreenKey === key) closeRestTimerFullscreen();
+        }, 1500);
+      }
       return;
     }
     st.displayEl.textContent = formatRestTime(remaining);
     st.displayEl.classList.add("rest-timer-active");
     st.displayEl.classList.remove("rest-timer-done");
+    if (isFullscreen) rtfTimeEl.textContent = formatRestTime(remaining);
   }
 
   function startRestTimer(key, seconds, displayEl) {
     if (restTimerState[key] && restTimerState[key].intervalId) clearInterval(restTimerState[key].intervalId);
     restTimerState[key] = { endTime: Date.now() + seconds * 1000, intervalId: null, displayEl: displayEl };
+    restTimerFullscreenKey = key;
+    rtfEl.classList.remove("rtf-done");
+    rtfEl.classList.add("open");
     tickRestTimer(key);
     restTimerState[key].intervalId = setInterval(function () { tickRestTimer(key); }, 1000);
   }
@@ -4070,11 +4153,12 @@
   function stopRestTimer(key, displayEl) {
     var st = restTimerState[key];
     if (st && st.intervalId) clearInterval(st.intervalId);
-    restTimerState[key] = { endTime: null, intervalId: null, displayEl: displayEl };
+    restTimerState[key] = { endTime: null, intervalId: null, displayEl: displayEl || (st && st.displayEl) };
     if (displayEl) {
       displayEl.textContent = "--:--";
       displayEl.classList.remove("rest-timer-active", "rest-timer-done");
     }
+    if (restTimerFullscreenKey === key) closeRestTimerFullscreen();
   }
 
   // Re-attaches a running timer's display to a freshly-rendered DOM node
@@ -4345,8 +4429,7 @@
       panel.appendChild(noteInput);
 
       var saveBtn = document.createElement("button");
-      saveBtn.className = "auth-btn";
-      saveBtn.style.marginTop = "8px";
+      saveBtn.className = "save-session-btn";
       saveBtn.textContent = "Save session";
       saveBtn.onclick = function () {
         var setsArr = setInputs
