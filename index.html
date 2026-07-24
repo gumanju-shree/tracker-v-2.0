@@ -40,6 +40,8 @@
     color: var(--text);
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     background-color: var(--bg);
     background-image:
       radial-gradient(circle at 15% 10%, rgba(232, 57, 31, 0.10), transparent 45%),
@@ -315,7 +317,7 @@
   .wrap {
     max-width: 920px;
     margin: 0 auto;
-    padding: calc(52px + env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
+    padding: 52px 20px calc(60px + env(safe-area-inset-bottom));
   }
 
   /* Header */
@@ -467,21 +469,6 @@
     margin-top: 4px;
   }
   .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .save-session-btn {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    background: linear-gradient(160deg, var(--iron-orange), var(--iron-red));
-    border: none;
-    border-radius: 8px;
-    color: #100A07;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 9px 16px;
-    cursor: pointer;
-    margin: 10px 0 2px;
-  }
-  .save-session-btn:active { transform: scale(0.98); }
   .auth-links {
     display: flex;
     justify-content: space-between;
@@ -711,25 +698,19 @@
   /* Workout table: stable column geometry and aligned cell content. */
   #workoutTable {
     table-layout: fixed;
-    min-width: 760px;
+    min-width: 620px;
   }
   #workoutTable th,
   #workoutTable td {
     box-sizing: border-box;
-    font-size: 13px;
   }
-  #workoutTable th:nth-child(1), #workoutTable td:nth-child(1) { width: 34%; }
-  #workoutTable th:nth-child(2), #workoutTable td:nth-child(2) { width: 14%; }
-  #workoutTable th:nth-child(3), #workoutTable td:nth-child(3) { width: 42%; }
-  #workoutTable th:nth-child(4), #workoutTable td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-  }
-  #workoutTable td:nth-child(2),
-  #workoutTable td:nth-child(4) {
+  #workoutTable th:nth-child(1), #workoutTable td:nth-child(1) { width: 36%; }
+  #workoutTable th:nth-child(2), #workoutTable td:nth-child(2) { width: 16%; }
+  #workoutTable th:nth-child(3), #workoutTable td:nth-child(3) { width: 48%; }
+  #workoutTable td:nth-child(2) {
     vertical-align: middle;
   }
-  .ex-name { font-weight: 500; font-size: 11px; }
+  .ex-name { font-weight: 600; }
   .table-scroll { overflow-x: auto; }
 
   .weight-cell { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -795,38 +776,6 @@
     font-style: italic;
     white-space: nowrap;
   }
-  .muscle-tag {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--muted);
-    background: #14110D;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 3px 8px;
-    white-space: nowrap;
-  }
-
-  .muscle-cell {
-    text-align: center;
-    vertical-align: middle !important;
-  }
-  .muscle-cell-inner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 42px;
-  }
-  .muscle-icon-wrap {
-    display: inline-flex;
-    align-items: flex-end;
-    flex-shrink: 0;
-    line-height: 0;
-  }
-  .muscle-icon-wrap svg {
-    display: block;
-  }
   .hist-panel {
     display: none;
     margin-top: 6px;
@@ -870,14 +819,19 @@
     white-space: nowrap;
   }
   /* Progression-state badge (local analysis engine — Stage 3) */
-  .prog-badge {
-    font-size: 10px;
-    font-weight: 700;
-    border-radius: 10px;
-    padding: 2px 7px;
-    white-space: nowrap;
-    cursor: help;
-  }
+.prog-badge {
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  cursor: help;
+
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  flex: 0 0 auto;
+}
   .prog-READY_FOR_LOAD_INCREASE { color: var(--iron-orange); background: #2A1B0F; border: 1px solid #5C3F1F; }
   .prog-PROGRESSING { color: var(--green-soft); background: #16281D; border: 1px solid #2E5C3F; }
   .prog-KEEP_WEIGHT { color: var(--muted); background: #14110D; border: 1px solid var(--border); }
@@ -885,19 +839,23 @@
   .prog-PERFORMANCE_DECLINING { color: var(--coral); background: #2A1512; border: 1px solid #5C2E2E; }
   .prog-PAIN_FLAGGED { color: var(--coral); background: #2A1512; border: 1px solid #5C2E2E; }
   .prog-INSUFFICIENT_DATA { color: var(--dim); background: #14110D; border: 1px dashed var(--border); }
-  .prog-reason {
-    font-size: 11px;
-    color: var(--muted);
+  .prog-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-top: 4px;
-    line-height: 1.4;
+    width: 100%;
+    justify-content: center;
   }
   .prog-suggest {
     font-size: 11px;
     color: var(--iron-orange);
-    margin-top: 2px;
     font-weight: 600;
+    white-space: nowrap;
+    line-height: 1.5;
   }
-  .logger-actions { display: flex; gap: 6px; }
+  .logger-actions { display: flex; gap: 6px; margin-top: 8px; }
 
   /* Est. 1RM badge (reuses trend-badge sizing) */
   .rm-badge {
@@ -953,41 +911,6 @@
   }
   .rest-timer-btn:hover { color: var(--iron-orange); border-color: var(--iron-orange); }
   .rest-timer-stop { color: var(--dim); }
-
-  .rest-timer-fullscreen {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: #0A0A0A;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    cursor: pointer;
-  }
-  .rest-timer-fullscreen.open { display: flex; }
-  .rtf-label {
-    font-family: 'Oswald', 'Inter', sans-serif;
-    font-size: 16px;
-    letter-spacing: 0.2em;
-    color: var(--iron-orange);
-    font-weight: 600;
-  }
-  .rtf-time {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 88px;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-  }
-  .rest-timer-fullscreen.rtf-done .rtf-time { color: var(--green); }
-  .rtf-hint {
-    font-size: 12px;
-    color: var(--dim);
-    margin-top: 4px;
-  }
 
   .logger-panel {
     margin-top: 8px;
@@ -1291,7 +1214,7 @@
     .ai-panel-input { font-size: 16px; }
 
     /* General tightening so cards use the full narrow width well */
-    .wrap { padding: calc(20px + env(safe-area-inset-top)) 12px calc(40px + env(safe-area-inset-bottom)); }
+    .wrap { padding: 20px 12px calc(40px + env(safe-area-inset-bottom)); }
     .card { padding: 14px; border-radius: 12px; }
     .card-title { font-size: 15px; }
     .top-tabs { gap: 2px; margin-bottom: 16px; }
@@ -1302,6 +1225,12 @@
        becomes its own stacked card so everything is readable and
        tappable without zooming or scrolling horizontally. */
     #view-workouts .card { overflow: visible; }
+    /* min-width from the desktop table-layout would otherwise force the
+       whole card wider than the phone screen and cause sideways scrolling
+       even though every row below is stacked as a block. Killing it here
+       is what actually stops the horizontal scroll on mobile. */
+    #workoutTable { min-width: 0; }
+    .table-scroll { overflow-x: visible; }
     #workoutTable, #workoutTable tbody { display: block; width: 100%; }
     #workoutTable thead { display: none; }
     #workoutTable tr {
@@ -1314,7 +1243,7 @@
       background: #14110D;
     }
     #workoutTable tr:last-child { margin-bottom: 0; }
-    /* The day-title row and Saturday rest-day row (colspan=4) keep a plain look */
+    /* The day-title row and Saturday rest-day row (colspan=3) keep a plain look */
     #workoutTable tr:has(td[colspan]) {
       background: transparent;
       border: none;
@@ -1323,10 +1252,12 @@
     #workoutTable td {
       display: block;
       width: 100% !important;
+      max-width: 100%;
       box-sizing: border-box;
       padding: 6px 2px;
       border-bottom: none;
       text-align: left !important;
+      overflow-wrap: break-word;
     }
     #workoutTable td[data-label]::before {
       content: attr(data-label);
@@ -1337,12 +1268,22 @@
       color: var(--dim);
       margin-bottom: 3px;
     }
-    #workoutTable td.muscle-cell { text-align: left; }
-    .muscle-cell-inner { justify-content: flex-start !important; }
     .weight-cell { flex-wrap: wrap; }
     .logger-summary {
       align-items: flex-start;
     }
+
+    /* Desktop sizing on these reads oversized on a narrow phone screen —
+       trim them down a notch for mobile specifically. */
+    #workoutTable { font-size: 11.5px; }
+    #workoutTable td.ex-name, #workoutTable td.ex-name .ex-name-link { font-size: 13px; }
+    #workoutTable td[data-label="Sets x Reps"] { font-size: 12px; }
+    .hist-btn { font-size: 10.5px; padding: 3px 6px; }
+    .prog-badge { font-size: 9.5px; padding: 2px 6px; }
+    .prog-row { gap: 5px; margin-top: 3px; }
+    .prog-suggest { font-size: 10.5px; }
+    .logger-last { font-size: 11px; }
+    .spark-label { font-size: 9.5px; }
 
     /* Editable daily schedule, stacked fields on narrow screens */
     .sched-edit-fields { flex-direction: column; }
@@ -1588,7 +1529,7 @@
   <!-- ============ WORKOUT PLANS VIEW ============ -->
   <div class="view" id="view-workouts">
     <div class="card">
-      <div class="section-tag mono" style="font-size:12px;" id="workoutPhaseTitle"></div>
+      <div class="section-tag mono" style="font-size:14px;" id="workoutPhaseTitle"></div>
       <div class="card-sub" id="workoutPhaseGoal" style="margin-bottom:14px;"></div>
       <div class="day-pill-row" id="workoutDayPills"></div>
       <div class="table-scroll">
@@ -1597,9 +1538,8 @@
             <col class="workout-col-exercise">
             <col class="workout-col-sets">
             <col class="workout-col-weight">
-            <col class="workout-col-muscle">
           </colgroup>
-          <thead><tr><th>Exercise</th><th>Sets x Reps</th><th>Weight (kg)</th><th>Muscle</th></tr></thead>
+          <thead><tr><th>Exercise</th><th>Sets x Reps</th><th>Weight (kg)</th></tr></thead>
           <tbody id="workoutTableBody"></tbody>
         </table>
       </div>
@@ -1647,13 +1587,6 @@
     </div>
   </div>
 
-</div>
-
-<!-- ============ Full-screen rest timer overlay ============ -->
-<div class="rest-timer-fullscreen" id="restTimerFullscreen">
-  <div class="rtf-label">REST</div>
-  <div class="rtf-time" id="rtfTime">00:00</div>
-  <div class="rtf-hint">tap anywhere to stop</div>
 </div>
 
 <script type="module">
@@ -2634,8 +2567,8 @@
   // =========================================================
   // STAGE 5 — Secure AI Coach client
   // =========================================================
-  // Talks ONLY to our own Cloudflare Worker, never to OpenRouter directly
-  // — the OpenRouter key never touches the browser. See /coach-worker in
+  // Talks ONLY to our own Cloudflare Worker, never to Groq directly
+  // — the Groq API key never touches the browser. See /coach-worker in
   // the project for the Worker source and deployment README.
 
   // Set this to your deployed Worker URL after running `wrangler deploy`
@@ -2786,7 +2719,7 @@
     return snapshot;
   }
 
-  // Calls the secure Worker backend (never OpenRouter directly). Resolves
+  // Calls the secure Worker backend (never Groq directly). Resolves
   // to { ok: true, data } where data is the parsed structured JSON, or
   // { raw: text } if the model didn't return valid JSON that turn — the
   // caller renders either safely (never via innerHTML). Resolves to
@@ -4092,9 +4025,6 @@
   // expandable panel to browse/delete past sessions.
   // ---- Rest timer (between-set countdown, UI-only, not persisted) ----
   var restTimerState = {}; // key -> { endTime, intervalId, displayEl }
-  var restTimerFullscreenKey = null; // key currently shown in the full-screen overlay
-  var rtfEl = document.getElementById("restTimerFullscreen");
-  var rtfTimeEl = document.getElementById("rtfTime");
 
   function formatRestTime(totalSeconds) {
     var m = Math.floor(totalSeconds / 60);
@@ -4102,21 +4032,10 @@
     return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
   }
 
-  function closeRestTimerFullscreen() {
-    restTimerFullscreenKey = null;
-    rtfEl.classList.remove("open", "rtf-done");
-  }
-
-  rtfEl.addEventListener("click", function () {
-    if (restTimerFullscreenKey) stopRestTimer(restTimerFullscreenKey);
-    closeRestTimerFullscreen();
-  });
-
   function tickRestTimer(key) {
     var st = restTimerState[key];
     if (!st || !st.displayEl) return;
     var remaining = Math.max(0, Math.round((st.endTime - Date.now()) / 1000));
-    var isFullscreen = restTimerFullscreenKey === key;
     if (remaining <= 0) {
       st.displayEl.textContent = "Rest done";
       st.displayEl.classList.remove("rest-timer-active");
@@ -4125,27 +4044,16 @@
       st.intervalId = null;
       st.endTime = null;
       try { if ("vibrate" in navigator) navigator.vibrate(200); } catch (e) {}
-      if (isFullscreen) {
-        rtfTimeEl.textContent = "00:00";
-        rtfEl.classList.add("rtf-done");
-        setTimeout(function () {
-          if (restTimerFullscreenKey === key) closeRestTimerFullscreen();
-        }, 1500);
-      }
       return;
     }
     st.displayEl.textContent = formatRestTime(remaining);
     st.displayEl.classList.add("rest-timer-active");
     st.displayEl.classList.remove("rest-timer-done");
-    if (isFullscreen) rtfTimeEl.textContent = formatRestTime(remaining);
   }
 
   function startRestTimer(key, seconds, displayEl) {
     if (restTimerState[key] && restTimerState[key].intervalId) clearInterval(restTimerState[key].intervalId);
     restTimerState[key] = { endTime: Date.now() + seconds * 1000, intervalId: null, displayEl: displayEl };
-    restTimerFullscreenKey = key;
-    rtfEl.classList.remove("rtf-done");
-    rtfEl.classList.add("open");
     tickRestTimer(key);
     restTimerState[key].intervalId = setInterval(function () { tickRestTimer(key); }, 1000);
   }
@@ -4153,12 +4061,11 @@
   function stopRestTimer(key, displayEl) {
     var st = restTimerState[key];
     if (st && st.intervalId) clearInterval(st.intervalId);
-    restTimerState[key] = { endTime: null, intervalId: null, displayEl: displayEl || (st && st.displayEl) };
+    restTimerState[key] = { endTime: null, intervalId: null, displayEl: displayEl };
     if (displayEl) {
       displayEl.textContent = "--:--";
       displayEl.classList.remove("rest-timer-active", "rest-timer-done");
     }
-    if (restTimerFullscreenKey === key) closeRestTimerFullscreen();
   }
 
   // Re-attaches a running timer's display to a freshly-rendered DOM node
@@ -4241,23 +4148,23 @@
     // every render; it's a cheap pure function over already-loaded history.
     if (hist.length) {
       var analysis = analyzeExerciseProgression(key, exerciseName || key, repRange);
+      var progRow = document.createElement("div");
+      progRow.className = "prog-row";
+
       var progBadge = document.createElement("div");
       progBadge.className = "prog-badge prog-" + analysis.state;
       progBadge.textContent = PROGRESSION_LABELS[analysis.state];
       progBadge.title = analysis.reason;
-      cell.appendChild(progBadge);
-
-      var reasonEl = document.createElement("div");
-      reasonEl.className = "prog-reason";
-      reasonEl.textContent = analysis.reason;
-      cell.appendChild(reasonEl);
+      progRow.appendChild(progBadge);
 
       if (analysis.suggestedAction) {
         var suggestEl = document.createElement("div");
         suggestEl.className = "prog-suggest";
         suggestEl.textContent = "Suggested next: " + analysis.suggestedAction.suggestedWeightKg + "kg";
-        cell.appendChild(suggestEl);
+        progRow.appendChild(suggestEl);
       }
+
+      cell.appendChild(progRow);
     }
 
     // Action buttons
@@ -4424,12 +4331,13 @@
       noteInput.type = "text";
       noteInput.className = "logger-note";
       noteInput.placeholder = "Optional note (technique, equipment, how it felt)";
-      noteInput.maxLength = 50;
+      noteInput.maxLength = 200;
       if (todaySession) noteInput.value = todaySession.note || "";
       panel.appendChild(noteInput);
 
       var saveBtn = document.createElement("button");
-      saveBtn.className = "save-session-btn";
+      saveBtn.className = "auth-btn";
+      saveBtn.style.marginTop = "8px";
       saveBtn.textContent = "Save session";
       saveBtn.onclick = function () {
         var setsArr = setInputs
@@ -4521,14 +4429,14 @@
     if (state.workoutDay === "Sat") {
       var tr = document.createElement("tr");
       var td = document.createElement("td");
-      td.colSpan = 4;
+      td.colSpan = 3;
       td.textContent = "Rest day. " + SATURDAY_NOTE;
       tr.appendChild(td);
       tbody.appendChild(tr);
     } else if (dayPlan) {
       var capTr = document.createElement("tr");
       var capTd = document.createElement("td");
-      capTd.colSpan = 4;
+      capTd.colSpan = 3;
       capTd.style.fontWeight = "700";
       capTd.style.color = "#FF7A1A";
       capTd.style.fontSize = "13px";
@@ -4603,24 +4511,7 @@
           renderLegacyWeightCell(c3, key, hist, lastEntry);
         }
 
-        var c4 = document.createElement("td");
-        c4.className = "muscle-cell";
-        c4.dataset.label = "Muscle";
-        var muscleInner = document.createElement("div");
-        muscleInner.className = "muscle-cell-inner";
-        if (isDemoable) {
-          var mGroup = muscleGroupFor(originalName);
-          var iconMarkup = muscleIconMarkup(mGroup);
-          if (iconMarkup) {
-            var iconWrap = document.createElement("span");
-            iconWrap.className = "muscle-icon-wrap";
-            iconWrap.innerHTML = iconMarkup;
-            muscleInner.appendChild(iconWrap);
-          }
-        }
-        c4.appendChild(muscleInner);
-
-        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4);
+        row.appendChild(c1); row.appendChild(c2); row.appendChild(c3);
         tbody.appendChild(row);
       });
     }
