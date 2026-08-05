@@ -337,6 +337,9 @@
     font-weight: 600;
     font-family: 'Oswald', 'Inter', sans-serif;
   }
+  .header .tag {
+    margin-top: 18px;
+  }
   h1 {
     font-size: 28px;
     font-weight: 800;
@@ -1313,6 +1316,7 @@
     padding: 7px 8px;
   }
   .sched-edit-time { width: 90px; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; }
+  .habit-edit-icon { width: 46px; flex-shrink: 0; text-align: center; }
   .sched-edit-fields { display: flex; gap: 6px; flex: 1; min-width: 160px; }
   .sched-edit-fields .sched-edit-input { flex: 1; min-width: 0; }
   .sched-edit-note { color: var(--muted); }
@@ -1451,7 +1455,7 @@
         <span id="flameIcon">🔥</span>
         <span id="streakNum" class="streak-num">0</span>
       </div>
-      <div class="streak-label">day streak (4+/5)</div>
+      <div class="streak-label" id="streakLabel">day streak (4+/5)</div>
       <button id="signOutBtn" class="signout-btn">Sign out</button>
     </div>
   </div>
@@ -1485,9 +1489,14 @@
             <div class="card-title" id="selectedDateLabel"></div>
             <div class="card-sub" id="gymTitleLabel"></div>
           </div>
-          <div class="score-pill mono" id="scorePill"></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="score-pill mono" id="scorePill"></div>
+            <button class="hist-btn" id="habitResetBtn" title="Reset to the default habit list">Reset</button>
+            <button class="hist-btn" id="habitEditBtn">Edit</button>
+          </div>
         </div>
         <div id="habitList"></div>
+        <button class="add-btn" id="habitAddBtn" style="margin-top:10px; display:none;">+ Add habit</button>
       </div>
 
       <div class="card" id="gymCard">
@@ -1618,7 +1627,10 @@
   var STORAGE_KEY = "habit-log-v2";
   var currentUser = null; // set once signed in; gates all Firestore reads/writes
 
-  var HABITS = [
+  // DEFAULT_HABITS is the template; the live, user-editable list lives in
+  // state.habits (see getHabits()) so labels/icons/order/count can all be
+  // customized without touching this default.
+  var DEFAULT_HABITS = [
     { key: "wake", label: "Wake before 8", icon: "☀️" },
     { key: "gym", label: "Gym", icon: "🏋️" },
     { key: "cyber", label: "CompTIA A+ 4 hrs", icon: "🛡️" },
@@ -1626,8 +1638,20 @@
     { key: "sleep", label: "Sleep before 11:30", icon: "🌙" }
   ];
 
+  function cloneDefaultHabits() {
+    return DEFAULT_HABITS.map(function (h) { return { key: h.key, label: h.label, icon: h.icon }; });
+  }
+  function getHabits() {
+    if (!state.habits || !state.habits.length) state.habits = cloneDefaultHabits();
+    return state.habits;
+  }
+  // Streak bar stays proportional to however many habits are currently
+  // configured (was fixed at "4 out of 5"); always requires at least 1.
+  function getStreakThreshold() {
+    return Math.max(1, getHabits().length - 1);
+  }
+
   var DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var STREAK_THRESHOLD = 4; // out of 5 habits (was 5 out of 6 before "read" was removed)
 
   // =========================================================
   // PHASES — from Shree_6Month_Plan.docx
@@ -1896,6 +1920,7 @@
     openHistory: {},      // { exerciseKey: true/false } — UI-only, not persisted
     openLogger: {},        // { exerciseKey: true/false } — UI-only, whether the set-logging panel is expanded
     schedule: null,        // [ {time, activity, note}, ... ] — user-editable daily schedule; defaults to DEFAULT_SCHEDULE
+    habits: null,           // [ {key, label, icon}, ... ] — user-editable habit checklist; defaults to DEFAULT_HABITS
     exerciseReplacements: {}, // { "phaseKey::dayName::originalExerciseName": "replacementExerciseName" }
     aiChatMessages: [],   // UI-only, NOT persisted — { role: 'user'|'assistant'|'system', text, data, warnings } — kept for the active app session only, per spec
     aiPanelOpen: false     // UI-only, NOT persisted
@@ -1931,6 +1956,7 @@
       weightLogs: state.weightLogs,
       sessionLogs: state.sessionLogs,
       schedule: scheduleToPersist(getSchedule()),
+      habits: getHabits(),
       exerciseReplacements: state.exerciseReplacements
     };
   }
@@ -1942,6 +1968,7 @@
     state.weightLogs = parsed.weightLogs || {};
     state.sessionLogs = parsed.sessionLogs || {};
     state.schedule = scheduleFromPersist(parsed.schedule) || cloneDefaultSchedule();
+    state.habits = (parsed.habits && parsed.habits.length) ? parsed.habits : cloneDefaultHabits();
     state.exerciseReplacements = parsed.exerciseReplacements || {};
   }
 
@@ -3152,13 +3179,52 @@
   function getDayLog(key) { return state.log[key] || {}; }
   function getScore(key) {
     var dayLog = getDayLog(key);
+    var habits = getHabits();
     var sum = 0;
-    for (var i = 0; i < HABITS.length; i++) if (dayLog[HABITS[i].key]) sum++;
+    for (var i = 0; i < habits.length; i++) if (dayLog[habits[i].key]) sum++;
     return sum;
   }
   function toggleHabit(key, habitKey) {
     if (!state.log[key]) state.log[key] = {};
     state.log[key][habitKey] = !state.log[key][habitKey];
+    saveState();
+    renderTracker();
+  }
+
+  // ---- Editable habit checklist (mirrors the schedule's edit pattern) ----
+  var habitEditMode = false; // UI-only, not persisted
+  function updateHabitField(idx, field, value) {
+    var habits = getHabits();
+    if (!habits[idx]) return;
+    habits[idx][field] = value;
+    saveState();
+  }
+  function moveHabitRow(idx, dir) {
+    var habits = getHabits();
+    var target = idx + dir;
+    if (target < 0 || target >= habits.length) return;
+    var tmp = habits[idx];
+    habits[idx] = habits[target];
+    habits[target] = tmp;
+    saveState();
+    renderTracker();
+  }
+  function deleteHabitRow(idx) {
+    var habits = getHabits();
+    if (habits.length <= 1) { alert("You need at least one habit."); return; }
+    habits.splice(idx, 1);
+    saveState();
+    renderTracker();
+  }
+  function addHabitRow() {
+    var habits = getHabits();
+    habits.push({ key: "habit_" + Date.now(), label: "New habit", icon: "⭐" });
+    saveState();
+    renderTracker();
+  }
+  function resetHabits() {
+    if (!confirm("Reset the habit checklist back to the default? This can't be undone.")) return;
+    state.habits = cloneDefaultHabits();
     saveState();
     renderTracker();
   }
@@ -3169,15 +3235,16 @@
     // Today counts toward the streak only if it already qualifies —
     // but an incomplete/unlogged "today" should never zero out a streak
     // built on previous days, so we always continue walking backwards.
+    var threshold = getStreakThreshold();
     var todayKey = dateKey(cursor);
-    if (state.log[todayKey] && getScore(todayKey) >= STREAK_THRESHOLD) {
+    if (state.log[todayKey] && getScore(todayKey) >= threshold) {
       streak++;
     }
     cursor.setDate(cursor.getDate() - 1);
 
     while (true) {
       var k = dateKey(cursor);
-      if (state.log[k] && getScore(k) >= STREAK_THRESHOLD) {
+      if (state.log[k] && getScore(k) >= threshold) {
         streak++;
         cursor.setDate(cursor.getDate() - 1);
       } else {
@@ -3189,7 +3256,7 @@
   function missedYesterday() {
     var y = new Date(); y.setDate(y.getDate() - 1);
     var k = dateKey(y);
-    return !!state.log[k] && getScore(k) < STREAK_THRESHOLD;
+    return !!state.log[k] && getScore(k) < getStreakThreshold();
   }
   function isToday(d) { return dateKey(d) === dateKey(new Date()); }
   function weekDates() {
@@ -3228,18 +3295,19 @@
   }
 
   function renderInsights() {
+    var habits = getHabits();
     var keys = lastNDateKeys(insightsRange);
-    var totalPossible = keys.length * HABITS.length;
+    var totalPossible = keys.length * habits.length;
     var totalChecked = 0;
     var daysLogged = 0;
     var perHabitCount = {};
-    HABITS.forEach(function (h) { perHabitCount[h.key] = 0; });
+    habits.forEach(function (h) { perHabitCount[h.key] = 0; });
 
     keys.forEach(function (k) {
       var dayLog = state.log[k];
       if (dayLog && Object.keys(dayLog).length) daysLogged++;
       totalChecked += getScore(k);
-      HABITS.forEach(function (h) {
+      habits.forEach(function (h) {
         if (dayLog && dayLog[h.key]) perHabitCount[h.key]++;
       });
     });
@@ -3264,7 +3332,7 @@
 
     var barsEl = document.getElementById("insightsHabitBars");
     barsEl.innerHTML = "";
-    HABITS.forEach(function (h) {
+    habits.forEach(function (h) {
       var pct = keys.length ? Math.round((perHabitCount[h.key] / keys.length) * 100) : 0;
       var row = document.createElement("div");
       row.className = "insight-bar-row";
@@ -3300,7 +3368,7 @@
       var dayLog = state.log[k];
       if (dayLog && Object.keys(dayLog).length) {
         cell.style.background = dotColorFor(getScore(k));
-        cell.title = k + " — " + getScore(k) + "/" + HABITS.length;
+        cell.title = k + " — " + getScore(k) + "/" + habits.length;
       } else {
         cell.title = k + " — no log";
       }
@@ -3391,34 +3459,82 @@
       selectedDate.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
     document.getElementById("gymTitleLabel").textContent = dayPlan ? dayPlan.title : "";
 
+    var habits = getHabits();
     var pill = document.getElementById("scorePill");
     // The score total must match the visible habit rows. With no habits
     // checked, show the neutral count rather than labeling the day as off.
     pill.textContent = selectedScore === 0
-      ? selectedScore + "/" + HABITS.length
-      : selectedScore + "/" + HABITS.length + " · " + rating.label;
+      ? selectedScore + "/" + habits.length
+      : selectedScore + "/" + habits.length + " · " + rating.label;
     pill.style.color = rating.color;
     pill.style.border = "1px solid " + rating.color + "55";
     pill.style.background = rating.color + "14";
+    pill.style.display = habitEditMode ? "none" : "block";
+
+    document.getElementById("habitEditBtn").textContent = habitEditMode ? "Done" : "Edit";
+    document.getElementById("habitAddBtn").style.display = habitEditMode ? "block" : "none";
+
+    var streakLabelEl = document.getElementById("streakLabel");
+    if (streakLabelEl) streakLabelEl.textContent = "day streak (" + getStreakThreshold() + "+/" + habits.length + ")";
 
     var habitList = document.getElementById("habitList");
     habitList.innerHTML = "";
-    HABITS.forEach(function (h) {
-      var checked = !!getDayLog(state.selectedDay)[h.key];
-      var row = document.createElement("button");
-      row.className = "habit-row";
-      row.onclick = function () { toggleHabit(state.selectedDay, h.key); };
-      var box = document.createElement("div");
-      box.className = "check-box" + (checked ? " checked" : "");
-      box.textContent = checked ? "✓" : "";
-      var icon = document.createElement("span");
-      icon.className = "habit-icon";
-      icon.textContent = h.icon;
-      var label = document.createElement("span");
-      label.className = "habit-label " + (checked ? "checked" : "unchecked");
-      label.textContent = h.label;
-      row.appendChild(box); row.appendChild(icon); row.appendChild(label);
-      habitList.appendChild(row);
+    habits.forEach(function (h, idx) {
+      if (!habitEditMode) {
+        var checked = !!getDayLog(state.selectedDay)[h.key];
+        var row = document.createElement("button");
+        row.className = "habit-row";
+        row.onclick = function () { toggleHabit(state.selectedDay, h.key); };
+        var box = document.createElement("div");
+        box.className = "check-box" + (checked ? " checked" : "");
+        box.textContent = checked ? "✓" : "";
+        var icon = document.createElement("span");
+        icon.className = "habit-icon";
+        icon.textContent = h.icon;
+        var label = document.createElement("span");
+        label.className = "habit-label " + (checked ? "checked" : "unchecked");
+        label.textContent = h.label;
+        row.appendChild(box); row.appendChild(icon); row.appendChild(label);
+        habitList.appendChild(row);
+      } else {
+        var div = document.createElement("div");
+        div.className = "sched-row sched-row-edit";
+
+        var iconInput = document.createElement("input");
+        iconInput.className = "sched-edit-input habit-edit-icon mono";
+        iconInput.value = h.icon;
+        iconInput.placeholder = "🙂";
+        iconInput.onchange = function () { updateHabitField(idx, "icon", iconInput.value); };
+
+        var fields = document.createElement("div");
+        fields.className = "sched-edit-fields";
+        var labelInput = document.createElement("input");
+        labelInput.className = "sched-edit-input";
+        labelInput.value = h.label;
+        labelInput.placeholder = "Habit name";
+        labelInput.onchange = function () { updateHabitField(idx, "label", labelInput.value); };
+        fields.appendChild(labelInput);
+
+        var controls = document.createElement("div");
+        controls.className = "sched-edit-controls";
+        var upBtn = document.createElement("button");
+        upBtn.className = "sched-move-btn"; upBtn.textContent = "↑"; upBtn.title = "Move up";
+        upBtn.disabled = idx === 0;
+        upBtn.onclick = function () { moveHabitRow(idx, -1); };
+        var downBtn = document.createElement("button");
+        downBtn.className = "sched-move-btn"; downBtn.textContent = "↓"; downBtn.title = "Move down";
+        downBtn.disabled = idx === habits.length - 1;
+        downBtn.onclick = function () { moveHabitRow(idx, 1); };
+        var delBtn = document.createElement("button");
+        delBtn.className = "sched-del-btn"; delBtn.textContent = "✕"; delBtn.title = "Remove";
+        delBtn.onclick = function () { deleteHabitRow(idx); };
+        controls.appendChild(upBtn); controls.appendChild(downBtn); controls.appendChild(delBtn);
+
+        div.appendChild(iconInput);
+        div.appendChild(fields);
+        div.appendChild(controls);
+        habitList.appendChild(div);
+      }
     });
 
     var gymCard = document.getElementById("gymCard");
@@ -4653,6 +4769,13 @@
   document.getElementById("scheduleAddBtn").onclick = function () { addScheduleRow(); };
   document.getElementById("scheduleResetBtn").onclick = function () { resetSchedule(); };
   document.getElementById("scheduleNotifyBtn").onclick = function () { toggleScheduleReminders(); };
+
+  document.getElementById("habitEditBtn").onclick = function () {
+    habitEditMode = !habitEditMode;
+    renderTracker();
+  };
+  document.getElementById("habitAddBtn").onclick = function () { addHabitRow(); };
+  document.getElementById("habitResetBtn").onclick = function () { resetHabits(); };
 
   document.querySelectorAll("#insightsRangeToggle .day-pill").forEach(function (pill) {
     pill.onclick = function () {
