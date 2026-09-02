@@ -3916,56 +3916,55 @@
       osc.start(startAt);
       osc.stop(startAt + durationMs / 1000 + 0.03);
     }
-    // Speaks a single word aloud using the browser's built-in text-to-speech,
-    // used for the start/stop cues below instead of a synthesized tone.
-    // Prefers a deeper, male-sounding system voice for a "gym coach" feel;
-    // falls back to the default voice with a lowered pitch if none is found.
-    var cachedMaleVoice = null;
-    var voiceLookupDone = false;
-    function pickMaleVoice() {
-      if (voiceLookupDone) return cachedMaleVoice;
-      var voices = window.speechSynthesis.getVoices();
-      if (!voices.length) return null; // not loaded yet, try again next call
-      voiceLookupDone = true;
-      var maleNameHints = ["male", "david", "mark", "daniel", "alex", "fred", "guy", "george", "james", "aaron"];
-      cachedMaleVoice = voices.find(function (v) {
-        var n = v.name.toLowerCase();
-        return maleNameHints.some(function (hint) { return n.indexOf(hint) !== -1; });
-      }) || null;
-      return cachedMaleVoice;
-    }
-    // Some browsers load voices asynchronously; refresh the lookup once they arrive.
-    if (window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = function () { voiceLookupDone = false; };
-    }
-    function speakWord(word) {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel(); // stop any overlapping utterance
-      var utter = new SpeechSynthesisUtterance(word);
-      var maleVoice = pickMaleVoice();
-      if (maleVoice) {
-        utter.voice = maleVoice;
-        utter.pitch = 0.8;  // slightly deeper than the voice's default
-      } else {
-        utter.pitch = 0.65; // no male voice found — lower default voice's pitch instead
-      }
-      utter.rate = 0.95;   // firm, coach-like pace rather than rushed
-      utter.volume = 1;
-      window.speechSynthesis.speak(utter);
-    }
-    // Spoken "Start" when a rest period begins.
-    function playStartSound() {
-      speakWord("Start");
-    }
+    // Start sound removed — the timer begins silently now.
+    function playStartSound() {}
     // Short, dry click on every whole second while the countdown runs.
     function playTickSound() {
       playTone(1500, 30, 0, 0.16, "square");
     }
-    // Spoken "Stop" — plays both when the countdown finishes and when the
-    // user manually stops it.
+    // Synthesized beep — plays both when the countdown finishes and when
+    // the user manually stops it.
     function playStopSound() {
-      speakWord("Stop");
+  playTone(600, 900, 0, 0.4, "sine");
+}
+
+    // ---- Keep-alive while resting: Wake Lock + fallback Notification ----
+    // Mobile browsers suspend timers/audio once the screen locks. Wake Lock
+    // asks the OS to keep the screen on (dimmed) while resting so the
+    // countdown and sounds keep running. If the person locks the phone
+    // anyway, or Wake Lock isn't supported, a Notification still fires when
+    // the rest period ends, since the OS delivers those even when the
+    // screen is off/backgrounded.
+    var wakeLock = null;
+    async function acquireWakeLock() {
+      if (!("wakeLock" in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request("screen");
+        wakeLock.addEventListener("release", function () { wakeLock = null; });
+      } catch (e) { wakeLock = null; } // denied, unsupported, or low battery
     }
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(function () {}); wakeLock = null; }
+    }
+    // Re-acquire the lock if the tab becomes visible again mid-rest (Wake
+    // Lock is automatically released when a tab is hidden/backgrounded).
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible" && fabBtn.classList.contains("counting")) {
+        acquireWakeLock();
+      }
+    });
+    function ensureNotificationPermission() {
+      if (!("Notification" in window)) return;
+      if (Notification.permission === "default") Notification.requestPermission();
+    }
+    function notifyRestOver() {
+      if (!("Notification" in window)) return;
+      if (Notification.permission !== "granted") return;
+      try { new Notification("Rest is over!", { body: "Time to get back to it.", tag: "rest-timer" }); }
+      catch (e) {} // some browsers require a service worker for this; fail silently
+    }
+    // Prime notification permission on first tap, same pattern as audio unlock.
+    document.addEventListener("click", ensureNotificationPermission, { once: true, capture: true });
 
     function fmtTime(s) {
       var m = Math.floor(s / 60);
@@ -3984,6 +3983,7 @@
     function resetTimerUI() {
       if (tickHandle) { clearInterval(tickHandle); tickHandle = null; }
       if (doneTimeout) { clearTimeout(doneTimeout); doneTimeout = null; }
+      releaseWakeLock();
       endAt = null;
       lastTickSecond = null;
       fabBtn.classList.remove("counting", "done");
@@ -4001,6 +4001,7 @@
         if (tickHandle) { clearInterval(tickHandle); tickHandle = null; }
         if (navigator.vibrate) navigator.vibrate([120, 60, 120]);
         playStopSound();
+        notifyRestOver();
         doneTimeout = setTimeout(resetTimerUI, 2500);
         return;
       }
@@ -4024,6 +4025,7 @@
       tickHandle = setInterval(tick, 200);
       closeMenu();
       playStartSound();
+      acquireWakeLock();
     }
 
     fabBtn.onclick = function (e) {
