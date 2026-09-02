@@ -1909,7 +1909,6 @@
     state.weightLogs = parsed.weightLogs || {};
     state.sessionLogs = parsed.sessionLogs || {};
     state.exerciseReplacements = parsed.exerciseReplacements || {};
-    purgeOldLoggedData();
   }
 
   // Reads the local cache only — used for the offline-first instant paint
@@ -3917,20 +3916,55 @@
       osc.start(startAt);
       osc.stop(startAt + durationMs / 1000 + 0.03);
     }
-    // Confident rising two-note "go" chime when a rest period begins.
+    // Speaks a single word aloud using the browser's built-in text-to-speech,
+    // used for the start/stop cues below instead of a synthesized tone.
+    // Prefers a deeper, male-sounding system voice for a "gym coach" feel;
+    // falls back to the default voice with a lowered pitch if none is found.
+    var cachedMaleVoice = null;
+    var voiceLookupDone = false;
+    function pickMaleVoice() {
+      if (voiceLookupDone) return cachedMaleVoice;
+      var voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return null; // not loaded yet, try again next call
+      voiceLookupDone = true;
+      var maleNameHints = ["male", "david", "mark", "daniel", "alex", "fred", "guy", "george", "james", "aaron"];
+      cachedMaleVoice = voices.find(function (v) {
+        var n = v.name.toLowerCase();
+        return maleNameHints.some(function (hint) { return n.indexOf(hint) !== -1; });
+      }) || null;
+      return cachedMaleVoice;
+    }
+    // Some browsers load voices asynchronously; refresh the lookup once they arrive.
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = function () { voiceLookupDone = false; };
+    }
+    function speakWord(word) {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel(); // stop any overlapping utterance
+      var utter = new SpeechSynthesisUtterance(word);
+      var maleVoice = pickMaleVoice();
+      if (maleVoice) {
+        utter.voice = maleVoice;
+        utter.pitch = 0.8;  // slightly deeper than the voice's default
+      } else {
+        utter.pitch = 0.65; // no male voice found — lower default voice's pitch instead
+      }
+      utter.rate = 0.95;   // firm, coach-like pace rather than rushed
+      utter.volume = 1;
+      window.speechSynthesis.speak(utter);
+    }
+    // Spoken "Start" when a rest period begins.
     function playStartSound() {
-      playTone(523, 110, 0, 0.32, "triangle");
-      playTone(784, 180, 100, 0.32, "triangle");
+      speakWord("Start");
     }
     // Short, dry click on every whole second while the countdown runs.
     function playTickSound() {
       playTone(1500, 30, 0, 0.16, "square");
     }
-    // Distinct low buzzer-style chime — plays both when the countdown
-    // finishes and when the user manually stops it.
+    // Spoken "Stop" — plays both when the countdown finishes and when the
+    // user manually stops it.
     function playStopSound() {
-      playTone(392, 130, 0, 0.32, "sawtooth");
-      playTone(261, 260, 130, 0.32, "sawtooth");
+      speakWord("Stop");
     }
 
     function fmtTime(s) {
