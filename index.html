@@ -96,7 +96,7 @@
     border: 1px solid rgba(255,255,255,0.12);
     background: linear-gradient(145deg, var(--iron-red), var(--iron-orange));
     color: #fff;
-    display: flex;
+    dis: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -114,7 +114,7 @@
     border-radius: 50%;
     background: var(--green);
     border: 2px solid var(--bg);
-    display: none;
+    dis: none;
   }
   .ai-fab.has-alert .ai-fab-dot { display: block; }
   .ai-fab.hidden { display: none; }
@@ -3920,12 +3920,12 @@
     function playStartSound() {}
     // Short, dry click on every whole second while the countdown runs.
     function playTickSound() {
-      playTone(1500, 30, 0, 0.16, "square");
+      playTone(1500, 30, 0, 0.9, "square");
     }
     // Synthesized beep — plays both when the countdown finishes and when
     // the user manually stops it.
     function playStopSound() {
-  playTone(600, 900, 0, 0.4, "sine");
+  playTone(600, 900, 0, 0.9, "sine");
 }
 
     // ---- Keep-alive while resting: Wake Lock + fallback Notification ----
