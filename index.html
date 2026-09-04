@@ -96,7 +96,7 @@
     border: 1px solid rgba(255,255,255,0.12);
     background: linear-gradient(145deg, var(--iron-red), var(--iron-orange));
     color: #fff;
-    dis: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -114,7 +114,7 @@
     border-radius: 50%;
     background: var(--green);
     border: 2px solid var(--bg);
-    dis: none;
+    display: none;
   }
   .ai-fab.has-alert .ai-fab-dot { display: block; }
   .ai-fab.hidden { display: none; }
@@ -395,6 +395,20 @@
   }
   .review-why-btn:hover { border-color: var(--iron-orange); }
   .review-empty { font-size: 12.5px; color: var(--dim); padding: 8px 0; }
+  .export-row {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  .export-btn {
+    font: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: .02em;
+    padding: 9px 14px; border-radius: 10px; cursor: pointer;
+    background: var(--iron-orange, #FF6B4A); color: #10100f; border: 1px solid transparent;
+    transition: filter .15s ease, border-color .15s ease;
+  }
+  .export-btn:hover { filter: brightness(1.08); }
+  .export-btn.export-btn-ghost { background: transparent; color: var(--dim); border-color: rgba(255,255,255,0.18); }
+  .export-btn.export-btn-ghost:hover { border-color: var(--iron-orange, #FF6B4A); }
+  .export-note { flex: 1 1 220px; font-size: 11.5px; color: var(--dim); line-height: 1.45; }
 
   .wrap {
     max-width: 920px;
@@ -1055,6 +1069,110 @@
   .nutri-stat.over .ns-value { color: var(--green-soft); }
   .nutri-stat.under .ns-value { color: var(--amber); }
 
+  /* ============ PART 3 — Progress page ============ */
+  .main-nav-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .main-nav-btn {
+    flex: 1; background: #14110D; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px; font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .main-nav-btn.active { color: var(--bg); background: var(--iron-orange); border-color: var(--iron-orange); }
+
+  .pg-section { margin-bottom: 18px; }
+  .pg-section-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px;
+  }
+  .pg-overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .pg-stat { background: #14110D; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .pg-stat .pg-label { font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+  .pg-stat .pg-value { font-size: 19px; font-weight: 800; color: var(--text); margin-top: 4px; }
+  .pg-stat .pg-sub { font-size: 10.5px; color: var(--dim); margin-top: 2px; }
+  .pg-stat .pg-value.accent { color: var(--iron-orange); }
+  .pg-stat .pg-value.pos { color: var(--green); }
+  .pg-stat .pg-value.neg { color: var(--coral); }
+
+  .pg-log-btn {
+    display: block; width: 100%; background: var(--iron-orange); color: var(--bg); border: none;
+    border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 800; cursor: pointer; margin: 4px 0 22px;
+  }
+
+  .pg-chart-wrap { margin-top: 8px; }
+  .pg-range-row { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .pg-range-btn {
+    background: #14110D; border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px;
+    font-size: 11px; color: var(--muted); cursor: pointer;
+  }
+  .pg-range-btn.active { color: var(--iron-orange); border-color: var(--iron-orange); }
+  .pg-chart-svg { width: 100%; height: auto; display: block; }
+  .pg-chart-empty { font-size: 12px; color: var(--dim); padding: 14px 0; text-align: center; }
+
+  .pg-metric-select { background: #14110D; border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 7px 9px; font-size: 12.5px; margin-bottom: 8px; }
+
+  .pg-measure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 8px; }
+  .pg-measure-card { background: #14110D; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+  .pg-measure-card:hover { border-color: var(--dim); }
+  .pg-measure-card .mc-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .pg-measure-card .mc-value { font-size: 17px; font-weight: 700; color: var(--text); margin-top: 3px; }
+  .pg-measure-card .mc-change { font-size: 11px; margin-top: 2px; }
+  .pg-measure-card .mc-change.pos { color: var(--green); }
+  .pg-measure-card .mc-change.neg { color: var(--coral); }
+  .pg-measure-card .mc-change.flat { color: var(--dim); }
+
+  .pg-pr-card {
+    background: #14110D; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+  }
+  .pg-pr-card.highlight { border-color: var(--iron-orange); background: #1D1309; }
+  .pg-pr-card .pr-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .pg-pr-row { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .pg-pr-row b { color: var(--text); font-weight: 700; }
+  .pg-pr-row .improve.pos { color: var(--green); }
+  .pg-pr-row .improve.neg { color: var(--coral); }
+  .pg-pr-date { font-size: 10.5px; color: var(--dim); margin-top: 5px; }
+  .pg-flagged-note { font-size: 10.5px; color: var(--amber); margin-top: 4px; }
+
+  .pg-goal-card { background: #14110D; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .pg-goal-card .g-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .pg-goal-card .g-name { font-size: 13px; font-weight: 700; color: var(--text); }
+  .pg-goal-card .g-name.done { text-decoration: line-through; color: var(--dim); }
+  .pg-goal-card .g-vals { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .pg-goal-bar-track { height: 7px; background: #221D18; border-radius: 4px; margin-top: 8px; overflow: hidden; }
+  .pg-goal-bar-fill { height: 100%; background: var(--iron-orange); border-radius: 4px; }
+  .pg-goal-bar-fill.done { background: var(--green); }
+  .pg-goal-del { background: transparent; border: none; color: var(--dim); cursor: pointer; font-size: 13px; }
+
+  .pg-history-item { border-bottom: 1px solid var(--border); padding: 9px 0; }
+  .pg-history-date { font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 3px; }
+  .pg-history-line { font-size: 12px; color: var(--text); }
+
+  .pg-modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end;
+    justify-content: center; z-index: 60;
+  }
+  .pg-modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px 16px 0 0;
+    padding: 18px; width: 100%; max-width: 480px; max-height: 86vh; overflow-y: auto;
+  }
+  @media (min-width: 560px) {
+    .pg-modal-backdrop { align-items: center; }
+    .pg-modal { border-radius: 16px; }
+  }
+  .pg-modal h3 { margin: 0 0 12px; font-size: 15px; }
+  .pg-field-row { margin-bottom: 10px; }
+  .pg-field-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .pg-field-row input, .pg-field-row select {
+    width: 100%; background: #14110D; border: 1px solid var(--border); color: var(--text);
+    border-radius: 7px; padding: 9px 10px; font-size: 13.5px;
+  }
+  .pg-measure-fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pg-modal-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .pg-modal-actions button { flex: 1; }
+  .pg-modal-close-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 11px; cursor: pointer; }
+  .pg-unit-toggle { display: flex; gap: 6px; margin-bottom: 10px; }
+  .pg-empty-note { font-size: 12px; color: var(--dim); padding: 10px 0; }
+  .logger-warmup-toggle { display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+  .logger-warmup-toggle input { width: 13px; height: 13px; }
+
   .verdict-line {
     margin-top: 6px;
     padding: 10px 14px;
@@ -1511,6 +1629,11 @@
     </div>
   </div>
 
+  <div class="main-nav-row" id="mainNavRow">
+    <button class="main-nav-btn active" id="navBtnWorkouts" type="button">Workouts</button>
+    <button class="main-nav-btn" id="navBtnProgress" type="button">Progress</button>
+  </div>
+
   <!-- ============ WORKOUT PLANS VIEW ============ -->
   <div class="view active" id="view-workouts">
     <div class="card">
@@ -1534,7 +1657,17 @@
       <div class="section-tag mono">🤖 SHREE AI COACH · WEEKLY TRAINING REVIEW</div>
       <div id="reviewSummaryRow" class="review-summary-row"></div>
       <div id="reviewList"></div>
+      <div class="export-row">
+        <button id="exportDataBtn" class="export-btn" type="button">⬇ Download AI report</button>
+        <button id="copyDataBtn" class="export-btn export-btn-ghost" type="button">Copy to clipboard</button>
+        <div class="export-note">A plain-text summary of all your logged training — download it or paste it into any AI for feedback on your progress.</div>
+      </div>
     </div>
+  </div>
+
+  <!-- ============ PROGRESS VIEW (PART 3) ============ -->
+  <div class="view" id="view-progress" style="display:none;">
+    <div id="progressRoot"></div>
   </div>
 
   <!-- ============ REST TIMER — floating button + duration menu ============ -->
@@ -1636,7 +1769,7 @@
       title: "Foundation & Hypertrophy",
       goal: "",
       days: {
-        Sun: { title: "Push (Chest, Shoulders, Triceps)", exercises: [
+        Mon: { title: "Push (Chest, Shoulders, Triceps)", exercises: [
           ["Barbell Bench Press", "3 x 8-10"],
           ["Incline Dumbbell Press", "3 x 10-12"],
           ["Seated Dumbbell Shoulder Press", "3 x 10-12"],
@@ -1645,15 +1778,18 @@
           ["Triceps Rope Pushdown", "3 x 12-15"],
           ["Overhead Triceps Extension", "3 x 12-15"]
         ]},
-        Mon: { title: "Pull (Back, Biceps)", exercises: [
-          ["Lat Pulldown (or Pull-ups)", "3 x 8-10"],
+        Tue: { title: "Pull (Back, Biceps)", exercises: [
+          ["Pull-ups (or Lat Pulldown)", "4 x 5-8"],
           ["Barbell/Dumbbell Row", "3 x 10-12"],
           ["Seated Cable Row", "3 x 10-12"],
-          ["Face Pulls", "3 x 15"],
+          ["Face Pulls", "2 x 15"],
           ["Barbell/Dumbbell Bicep Curl", "3 x 10-12"],
-          ["Hammer Curls", "3 x 12-15"]
+          ["Hammer Curls", "2 x 12-15"],
+          ["Plate Hold", "3 x 30-45s"],
+          ["90° Pull-up Static Hold", "3 x 10-20s"]
         ]},
-        Tue: { title: "Legs (Quads, Hams, Glutes, Calves)", exercises: [
+        Wed: { title: "Rest", exercises: [] },
+        Thu: { title: "Legs (Quads, Hams, Glutes, Calves)", exercises: [
           ["Barbell Squat", "3 x 8-10"],
           ["Romanian Deadlift", "3 x 10-12"],
           ["Leg Press", "3 x 12-15"],
@@ -1661,33 +1797,24 @@
           ["Leg Curl (hamstrings)", "3 x 12-15"],
           ["Standing Calf Raise", "3 x 15-20"]
         ]},
-        Wed: { title: "Push (Chest, Shoulders, Triceps)", exercises: [
+        Fri: { title: "Upper (Chest, Shoulders, Triceps)", exercises: [
           ["Barbell Bench Press", "3 x 8-10"],
           ["Incline Dumbbell Press", "3 x 10-12"],
-          ["Seated Dumbbell Shoulder Press", "3 x 10-12"],
-          ["Cable Chest Fly", "3 x 12-15"],
-          ["Lateral Raises", "3 x 12-15"],
-          ["Triceps Rope Pushdown", "3 x 12-15"],
-          ["Overhead Triceps Extension", "3 x 12-15"]
+          ["Seated Dumbbell Shoulder Press", "2 x 10-12"],
+          ["Cable Chest Fly", "2 x 12-15"],
+          ["Lateral Raises", "2 x 12-15"],
+          ["Triceps Rope Pushdown", "2 x 12-15"]
         ]},
-        Thu: { title: "Pull (Back, Biceps)", exercises: [
-          ["Lat Pulldown (or Pull-ups)", "3 x 8-10"],
-          ["Barbell/Dumbbell Row", "3 x 10-12"],
-          ["Seated Cable Row", "3 x 10-12"],
-          ["Face Pulls", "3 x 15"],
-          ["Barbell/Dumbbell Bicep Curl", "3 x 10-12"],
-          ["Hammer Curls", "3 x 12-15"]
-        ]},
-        Fri: { title: "Legs + Core/Abs", exercises: [
+        Sat: { title: "Futsal", exercises: [] },
+        Sun: { title: "Lower + Core (light)", exercises: [
           ["Front Squat or Goblet Squat", "3 x 10"],
           ["Leg Extension", "3 x 15"],
-          ["Glute Bridge / Hip Thrust", "3 x 12-15"],
+          ["Romanian Deadlift", "3 x 8-10"],
           ["Seated Calf Raise", "3 x 15-20"],
           ["Hanging Leg Raise", "3 x 12-15"],
-          ["Plank", "3 x 45-60s hold"],
-          ["Russian Twists", "3 x 20 total"]
-        ]},
-        Sat: { title: "Rest", exercises: [] }
+          ["Plank", "3 x 45-60s"],
+          ["Cable Crunch", "3 x 10-15"]
+        ]}
       }
     },
     {
@@ -1859,12 +1986,26 @@
     phase: "p1",           // single phase used across Workout Plans
     workoutDay: "Sun",
     weightLogs: {},      // { exerciseKey: [ {date: 'YYYY-MM-DD', weight: 60}, ... ] }  newest first — LEGACY, kept for backward compat ("last: Xkg" badge)
-    sessionLogs: {},      // { exerciseKey: [ {date, targetRepMin, targetRepMax, sets:[{setNumber,weightKg,reps}], rir, pain, note}, ... ] } newest first — full per-set history
+    // mode is "weight" | "reps" | "time"; a set carries only the fields its
+    // mode uses — {weightKg,reps} / {reps} / {seconds}.
+    sessionLogs: {},      // { exerciseKey: [ {date, mode, targetRepMin, targetRepMax, sets:[{setNumber,weightKg,reps,seconds}], rir, pain, note}, ... ] } newest first — full per-set history
     openHistory: {},      // { exerciseKey: true/false } — UI-only, not persisted
     openLogger: {},        // { exerciseKey: true/false } — UI-only, whether the set-logging panel is expanded
     exerciseReplacements: {}, // { "phaseKey::dayName::originalExerciseName": "replacementExerciseName" }
     aiChatMessages: [],   // UI-only, NOT persisted — { role: 'user'|'assistant'|'system', text, data, warnings } — kept for the active app session only, per spec
-    aiPanelOpen: false     // UI-only, NOT persisted
+    aiPanelOpen: false,    // UI-only, NOT persisted
+    activeView: "workouts", // "workouts" | "progress" — UI-only, not persisted
+
+    // ---- Progress-tracking data (PART 2/3) — permanent, NOT subject to the
+    // 21-day sessionLogs purge above. Kept intentionally lightweight (one
+    // small record per event) so a long training history never bloats the
+    // Firestore doc the way raw per-set logs would if kept forever.
+    bodyWeightEntries: [],     // [{id, date, weightKg, note}] newest first
+    measurementSessions: [],   // [{id, date, unit:'cm'|'in', waist, chest, rightBiceps, leftBiceps, rightThigh, leftThigh, shoulders, rightCalf, leftCalf, hips, neck, notes}] newest first
+    goals: [],                 // [{id, name, metricType, target, start, current, targetDate, completed, createdAt}]
+    trainingLog: [],           // [{date, type:'gym'|'futsal'}] one entry per day, permanent — powers streaks/consistency
+    exercisePR: {}             // { exerciseKey: { mode, firstDate, firstValue, bestValue, bestWeightKg, bestReps, bestSeconds, bestVolume, best1RM, prDate, prHistory:[{date,mode,value,weightKg,reps,seconds,e1rm,flagged}] } }
+                               // `bestValue` is the mode's own metric: kg (weight), clean reps (reps), seconds (time).
   };
 
   // Logged sets older than this are auto-deleted on every load/save so
@@ -1899,16 +2040,31 @@
       phase: state.phase,
       weightLogs: state.weightLogs,
       sessionLogs: state.sessionLogs,
-      exerciseReplacements: state.exerciseReplacements
+      exerciseReplacements: state.exerciseReplacements,
+      bodyWeightEntries: state.bodyWeightEntries,
+      measurementSessions: state.measurementSessions,
+      goals: state.goals,
+      trainingLog: state.trainingLog,
+      exercisePR: state.exercisePR
     };
   }
 
   function loadStateFromObject(parsed) {
-    if (!parsed) return;
-    state.phase = parsed.phase || parsed.activePhase || "p1"; // activePhase = old buggy key, tolerated for migration
-    state.weightLogs = parsed.weightLogs || {};
-    state.sessionLogs = parsed.sessionLogs || {};
-    state.exerciseReplacements = parsed.exerciseReplacements || {};
+    if (parsed) {
+      state.phase = parsed.phase || parsed.activePhase || "p1"; // activePhase = old buggy key, tolerated for migration
+      state.weightLogs = parsed.weightLogs || {};
+      state.sessionLogs = parsed.sessionLogs || {};
+      state.exerciseReplacements = parsed.exerciseReplacements || {};
+      state.bodyWeightEntries = parsed.bodyWeightEntries || [];
+      state.measurementSessions = parsed.measurementSessions || [];
+      state.goals = parsed.goals || [];
+      state.trainingLog = parsed.trainingLog || [];
+      state.exercisePR = parsed.exercisePR || {};
+    }
+    // Sessions logged before the Progress page existed (or synced from an
+    // older version of the app) have no PR/training-log records. Derive them
+    // from the sets already stored so Progress always reflects Workouts.
+    backfillProgressFromSessionLogs();
   }
 
   // Reads the local cache only — used for the offline-first instant paint
@@ -2075,23 +2231,112 @@
     saveState();
   }
 
-  // ---- Per-set session logging (sets × reps, RIR, pain, note) ----
+  // ---- Tracking mode ----
+  // Each movement is tracked with the metric that actually reflects
+  // performance: external load (weight x reps), bodyweight reps, or time
+  // under tension in seconds for static holds.
+  //   "weight" -> kg x reps      (bench, squat, curls, machines)
+  //   "reps"   -> reps only      (pull-ups, push-ups, dips, bodyweight core)
+  //   "time"   -> seconds only   (plank, plate hold, 90° pull-up hold)
+  // Anything with "weighted" in the name goes back to load tracking, since
+  // added load is then the progression driver.
+  function trackingModeFor(exerciseName, planStr) {
+    var n = String(exerciseName || "");
+    var p = String(planStr || "");
+    // 1) Static / isometric holds are ALWAYS time-tracked, even when loaded
+    //    (a weighted plank still progresses by seconds under tension).
+    var timeish = /plank|plate hold|static hold|dead hang|\bhold\b|\bcarry\b|farmer/i.test(n) ||
+      /\d\s*-\s*\d+\s*s(?:ec)?\b/i.test(p) || /\b\d+\s*s(?:ec)?\b/i.test(p) || /hold/i.test(p);
+    if (timeish) return "time";
+    // 2) Explicitly loaded variants progress by added external load.
+    if (/weighted|\bplate\b|\bdumbbell\b|\bbarbell\b|\bcable\b|\bmachine\b/i.test(n)) return "weight";
+    // 3) Bodyweight rep movements are counted in clean reps only.
+    if (/pull-?up|chin-?up|push-?up|\bdips?\b|hanging leg raise|russian twist|ab wheel|sit-?up|crunch(?!.*cable)/i.test(n)) return "reps";
+    return "weight";
+  }
+  function trackingUnit(mode) {
+    return mode === "time" ? "s" : mode === "reps" ? " reps" : "kg";
+  }
+  function trackingNoun(mode) {
+    return mode === "time" ? "seconds" : mode === "reps" ? "reps" : "weight";
+  }
+
+  // Resolves the mode a stored session was recorded in. Newer sessions
+  // carry an explicit `mode`; older records are inferred from their shape
+  // (seconds present -> time, no weight -> reps) and finally from the
+  // exercise name, so legacy data never renders as "undefinedkg".
+  function sessionMode(session, exerciseName) {
+    if (session && session.mode) return session.mode;
+    if (session && session.sets && session.sets.length) {
+      var s0 = session.sets[0];
+      if (s0 && s0.seconds !== undefined && s0.seconds !== null) return "time";
+      if (s0 && (s0.weightKg === null || s0.weightKg === undefined)) return "reps";
+    }
+    if (exerciseName) return trackingModeFor(exerciseName);
+    return "weight";
+  }
+
+  // The single number that represents a set's performance in its mode.
+  function setPrimaryValue(set, mode) {
+    if (!set) return 0;
+    if (mode === "time") return Number(set.seconds) || 0;
+    if (mode === "reps") return Number(set.reps) || 0;
+    return Number(set.weightKg) || 0;
+  }
+
+  // Mode-appropriate rendering of a scalar metric (never "kg" for holds).
+  function formatMetricValue(v, mode) {
+    if (v === null || v === undefined || v === "" || isNaN(Number(v))) return "\u2014";
+    var n = Math.round(Number(v) * 10) / 10;
+    if (mode === "time") return n + "s";
+    if (mode === "reps") return n + " reps";
+    return n + "kg";
+  }
+
+  // Mode-appropriate rendering of one logged set.
+  function formatSetValue(set, mode) {
+    if (mode === "time") return (Number(set.seconds) || 0) + "s";
+    if (mode === "reps") return (Number(set.reps) || 0) + " reps";
+    var w = Number(set.weightKg);
+    return (isNaN(w) ? "?" : (Math.round(w * 10) / 10)) + "kg \u00d7 " + (set.reps !== null && set.reps !== undefined ? set.reps : "?");
+  }
+
+  // Compact one-line summary of a whole session, e.g.
+  //   weight -> "60kg x 10/10/8"   reps -> "8/7/7 reps"   time -> "45/40/38s"
+  function formatSessionSummary(session, mode) {
+    var sets = (session && session.sets) || [];
+    if (!sets.length) return "\u2014";
+    if (mode === "time") return sets.map(function (s) { return Number(s.seconds) || 0; }).join("/") + "s";
+    if (mode === "reps") return sets.map(function (s) { return Number(s.reps) || 0; }).join("/") + " reps";
+    var top = Math.max.apply(null, sets.map(function (s) { return Number(s.weightKg) || 0; }));
+    return (Math.round(top * 10) / 10) + "kg \u00d7 " + sets.map(function (s) { return s.reps; }).join("/");
+  }
+
+  // Target-range wording for the plan cell / logger hints.
+  function formatTargetRange(repRange, mode) {
+    if (!repRange) return "";
+    var r = repRange.repMin + (repRange.repMax !== repRange.repMin ? "\u2013" + repRange.repMax : "");
+    return mode === "time" ? r + "s" : r + " reps";
+  }
+
+  // ---- Per-set session logging (sets × reps/seconds, RIR, pain, note) ----
   // Parses a plan's "Sets x Reps" display string (e.g. "3 x 8-10",
-  // "3 x 12 each leg", "3 x 45-60s hold") into a structured rep range.
-  // Returns null when the exercise isn't a countable working-sets movement
-  // (rest days, cardio finishers, timed holds) — those fall back to the
-  // legacy single-weight badge instead of per-set logging.
+  // "3 x 12 each leg", "3 x 45-60s hold") into a structured target range.
+  // Returns null when the exercise isn't a countable set-based movement
+  // (rest days, cardio finishers, "max controlled hold") — those fall back
+  // to the legacy single-weight badge instead of per-set logging.
   function parseSetsRepRange(str) {
     if (!str || str === "—") return null;
     var m = /(\d+)\s*x\s*(\d+)(?:\s*-\s*(\d+))?/i.exec(str);
     if (!m) return null;
-    if (/s\s*hold/i.test(str)) return null; // timed holds aren't rep-based
     var numSets = parseInt(m[1], 10);
     var repMin = parseInt(m[2], 10);
     var repMax = m[3] ? parseInt(m[3], 10) : repMin;
     if (!numSets || !repMin) return null;
     return { numSets: numSets, repMin: repMin, repMax: repMax };
   }
+
+
 
   function getSessionHistory(key) {
     return state.sessionLogs[key] || [];
@@ -2105,13 +2350,16 @@
   // working sets. This is the standard "volume load" approximation used
   // throughout — it's a useful trend signal, not a precise physiological
   // measure, and is only ever compared against a lifter's own history.
-  function computeSessionVolume(session) {
+  // For reps-only movements this is total clean reps; for static holds it
+  // is total seconds under tension. Comparable only against itself.
+  function computeSessionVolume(session, mode) {
     if (!session || !session.sets) return 0;
+    mode = mode || sessionMode(session);
     var total = 0;
     session.sets.forEach(function (s) {
-      var w = Number(s.weightKg) || 0;
-      var r = Number(s.reps) || 0;
-      total += w * r;
+      if (mode === "time") { total += Number(s.seconds) || 0; return; }
+      if (mode === "reps") { total += Number(s.reps) || 0; return; }
+      total += (Number(s.weightKg) || 0) * (Number(s.reps) || 0);
     });
     return total;
   }
@@ -2135,8 +2383,12 @@
   // ---- Estimated 1-rep max (Epley formula: weight * (1 + reps/30)) ----
   // Applied to a session's heaviest set. Reps capped at 12 since the
   // formula gets unreliable for very high-rep sets.
-  function estimateOneRepMax(session) {
+  // Only meaningful for externally loaded work — an estimated 1RM for a
+  // bodyweight rep set or a timed hold is nonsense, so we return null and
+  // the badge is simply not rendered for those modes.
+  function estimateOneRepMax(session, mode) {
     if (!session || !session.sets || !session.sets.length) return null;
+    if ((mode || sessionMode(session)) !== "weight") return null;
     var best = 0;
     session.sets.forEach(function (s) {
       var w = parseFloat(s.weightKg), r = parseFloat(s.reps);
@@ -2148,12 +2400,14 @@
     return best > 0 ? Math.round(best * 10) / 10 : null;
   }
 
-  // ---- Small inline SVG sparkline of top-set weight across recent sessions ----
-  function buildTopSetSparkline(key, maxPoints) {
+  // ---- Small inline SVG sparkline of the top set's tracked metric ----
+  // (heaviest kg, best rep count, or longest hold, depending on mode)
+  function buildTopSetSparkline(key, maxPoints, mode) {
     var hist = getSessionHistory(key).slice(0, maxPoints || 8).slice().reverse(); // oldest -> newest
     if (hist.length < 2) return null;
     var values = hist.map(function (session) {
-      return Math.max.apply(null, session.sets.map(function (s) { return parseFloat(s.weightKg) || 0; }));
+      var m = mode || sessionMode(session);
+      return Math.max.apply(null, session.sets.map(function (s) { return setPrimaryValue(s, m); }));
     });
     var w = 110, h = 28, pad = 3;
     var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
@@ -2221,6 +2475,22 @@
     INSUFFICIENT_DATA: "Not enough data yet"
   };
 
+  // Same underlying states, worded for the metric that actually drives
+  // progression on that movement — a plank is never "ready for load".
+  var PROGRESSION_LABELS_BY_MODE = {
+    reps: { READY_FOR_LOAD_INCREASE: "Ready for more reps", KEEP_WEIGHT: "Hold current reps" },
+    time: { READY_FOR_LOAD_INCREASE: "Ready for longer holds", KEEP_WEIGHT: "Hold current time" }
+  };
+  function progressionLabel(stateKey, mode) {
+    var byMode = PROGRESSION_LABELS_BY_MODE[mode];
+    if (byMode && byMode[stateKey]) return byMode[stateKey];
+    return PROGRESSION_LABELS[stateKey] || stateKey;
+  }
+
+  // Conservative default progression steps for non-weight modes.
+  var REP_INCREMENT = 1;      // +1 clean rep
+  var TIME_INCREMENT_SEC = 5; // +5 seconds under tension
+
   // Configurable load increments (kept separate from the rules below so a
   // future Settings UI can adjust them without touching analysis logic).
   // Lower-body compound lifts tolerate bigger jumps than upper-body
@@ -2255,15 +2525,27 @@
     return isNaN(n) ? null : n;
   }
 
-  function sessionHitTopOfRange(session, repMax) {
+  // "Top of range" means top reps for weight/reps modes and the top of the
+  // seconds target for static holds.
+  function sessionHitTopOfRange(session, repMax, mode) {
     if (!session || !session.sets || !session.sets.length || !repMax) return false;
-    return session.sets.every(function (s) { return s.reps >= repMax; });
+    mode = mode || sessionMode(session);
+    return session.sets.every(function (s) {
+      var v = mode === "weight" ? (Number(s.reps) || 0) : setPrimaryValue(s, mode);
+      return v >= repMax;
+    });
   }
-  function sumReps(session) {
-    return session.sets.reduce(function (t, s) { return t + s.reps; }, 0);
+  // Total effort count: reps for weight/reps modes, seconds for holds.
+  function sumReps(session, mode) {
+    mode = mode || sessionMode(session);
+    return session.sets.reduce(function (t, s) {
+      return t + (mode === "time" ? (Number(s.seconds) || 0) : (Number(s.reps) || 0));
+    }, 0);
   }
-  function topWeightOf(session) {
-    return session.sets.reduce(function (m, s) { return Math.max(m, s.weightKg); }, 0);
+  // Highest tracked value in a session (kg / reps / seconds).
+  function topValueOf(session, mode) {
+    mode = mode || sessionMode(session);
+    return session.sets.reduce(function (m, s) { return Math.max(m, setPrimaryValue(s, mode)); }, 0);
   }
   function average(arr) {
     if (!arr.length) return 0;
@@ -2290,6 +2572,7 @@
     cutoff.setDate(cutoff.getDate() - windowWeeks * 7);
     var cutoffKey = dateKey(cutoff);
 
+    var mode = options.mode || trackingModeFor(exerciseName);
     var fullHist = getSessionHistory(key); // newest first
     var hist = fullHist.filter(function (s) { return s.date >= cutoffKey; });
     // If the strict date window leaves too little to say anything useful
@@ -2299,13 +2582,18 @@
 
     var result = {
       exerciseName: exerciseName,
+      trackingMode: mode,
+      trackingUnit: trackingUnit(mode),
       targetRepMin: repRange ? repRange.repMin : null,
       targetRepMax: repRange ? repRange.repMax : null,
       analysisPeriodWeeks: windowWeeks,
       sessionsAnalyzed: hist.length,
       state: PROGRESSION_STATES.INSUFFICIENT_DATA,
       metrics: {
+        trackingMode: mode,
         totalCompletedReps: null,
+        totalSeconds: null,
+        bestValue: null,
         averageWeightKg: null,
         highestWorkingWeightKg: null,
         totalVolumeLoad: null,
@@ -2329,30 +2617,40 @@
     result.metrics.painFlaggedRecently = painFlaggedRecently;
 
     // ---- Aggregate metrics across the window ----
-    var totalReps = 0, totalVolume = 0, weightSum = 0, weightCount = 0, maxWeight = 0;
+    var totalReps = 0, totalSeconds = 0, totalVolume = 0, weightSum = 0, weightCount = 0, maxWeight = 0, bestValue = 0;
     hist.forEach(function (s) {
       s.sets.forEach(function (set) {
-        totalReps += set.reps;
-        totalVolume += set.weightKg * set.reps;
-        weightSum += set.weightKg;
+        var v = setPrimaryValue(set, mode);
+        if (v > bestValue) bestValue = v;
+        if (mode === "time") {
+          totalSeconds += Number(set.seconds) || 0;
+          totalVolume += Number(set.seconds) || 0;
+          return;
+        }
+        totalReps += Number(set.reps) || 0;
+        if (mode === "reps") { totalVolume += Number(set.reps) || 0; return; }
+        totalVolume += (Number(set.weightKg) || 0) * (Number(set.reps) || 0);
+        weightSum += Number(set.weightKg) || 0;
         weightCount++;
-        if (set.weightKg > maxWeight) maxWeight = set.weightKg;
+        if ((Number(set.weightKg) || 0) > maxWeight) maxWeight = Number(set.weightKg) || 0;
       });
     });
-    result.metrics.totalCompletedReps = totalReps;
+    result.metrics.totalCompletedReps = mode === "time" ? null : totalReps;
+    result.metrics.totalSeconds = mode === "time" ? totalSeconds : null;
+    result.metrics.bestValue = bestValue || null;
     result.metrics.totalVolumeLoad = Math.round(totalVolume);
     result.metrics.averageWeightKg = weightCount ? Math.round((weightSum / weightCount) * 10) / 10 : null;
-    result.metrics.highestWorkingWeightKg = maxWeight || null;
+    result.metrics.highestWorkingWeightKg = mode === "weight" ? (maxWeight || null) : null;
 
     if (repRange) {
-      var hitCount = hist.filter(function (s) { return sessionHitTopOfRange(s, repRange.repMax); }).length;
+      var hitCount = hist.filter(function (s) { return sessionHitTopOfRange(s, repRange.repMax, mode); }).length;
       result.metrics.targetRangeCompletionRate = Math.round((hitCount / hist.length) * 100);
     }
 
     // Volume trend: recent third vs earliest third of the window, compared
     // only against this exercise's own history.
     if (hist.length >= 3) {
-      var volumes = hist.map(computeSessionVolume); // newest first
+      var volumes = hist.map(function (s) { return computeSessionVolume(s, mode); }); // newest first
       var thirdLen = Math.max(1, Math.floor(hist.length / 3));
       var recentAvg = average(volumes.slice(0, thirdLen));
       var earliestAvg = average(volumes.slice(-thirdLen));
@@ -2367,16 +2665,22 @@
     var compareIdx = Math.min(hist.length - 1, 2);
     var comparable = hist[compareIdx];
     if (latest !== comparable) {
-      var latestTotalReps = sumReps(latest), comparableTotalReps = sumReps(comparable);
-      var latestTopWeight = topWeightOf(latest), comparableTopWeight = topWeightOf(comparable);
+      var latestTotalReps = sumReps(latest, mode), comparableTotalReps = sumReps(comparable, mode);
+      var latestTopValue = topValueOf(latest, mode), comparableTopValue = topValueOf(comparable, mode);
 
       if (latestTotalReps > comparableTotalReps) result.metrics.repTrend = "improving";
       else if (latestTotalReps < comparableTotalReps) result.metrics.repTrend = "declining";
       else result.metrics.repTrend = "stable";
 
-      if (latestTopWeight > comparableTopWeight) result.metrics.loadTrend = "improving";
-      else if (latestTopWeight < comparableTopWeight) result.metrics.loadTrend = "declining";
-      else result.metrics.loadTrend = "stable";
+      // "loadTrend" is the top-value trend: kg for weighted work, best rep
+      // count for bodyweight reps, longest hold for isometrics.
+      if (mode === "weight") {
+        if (latestTopValue > comparableTopValue) result.metrics.loadTrend = "improving";
+        else if (latestTopValue < comparableTopValue) result.metrics.loadTrend = "declining";
+        else result.metrics.loadTrend = "stable";
+      } else {
+        result.metrics.loadTrend = result.metrics.repTrend;
+      }
     }
 
     // Recent RIR trend — only computed when RIR has actually been logged.
@@ -2394,13 +2698,13 @@
     // registering as a real change.
     var stalledStreak = 0, decliningStreak = 0, i, v1, v0, change;
     for (i = 0; i < hist.length - 1; i++) {
-      v1 = computeSessionVolume(hist[i]); v0 = computeSessionVolume(hist[i + 1]);
+      v1 = computeSessionVolume(hist[i], mode); v0 = computeSessionVolume(hist[i + 1], mode);
       if (v0 === 0) break;
       change = (v1 - v0) / v0;
       if (change < -0.03) decliningStreak++; else break;
     }
     for (i = 0; i < hist.length - 1; i++) {
-      v1 = computeSessionVolume(hist[i]); v0 = computeSessionVolume(hist[i + 1]);
+      v1 = computeSessionVolume(hist[i], mode); v0 = computeSessionVolume(hist[i + 1], mode);
       if (v0 === 0) break;
       change = (v1 - v0) / v0;
       if (Math.abs(change) <= 0.03) stalledStreak++; else break;
@@ -2421,21 +2725,50 @@
       return result;
     }
 
-    var repRangeMet = !!(repRange && sessionHitTopOfRange(latest, repRange.repMax));
+    var repRangeMet = !!(repRange && sessionHitTopOfRange(latest, repRange.repMax, mode));
     var rirSuggestsRoom = rirVals.length ? rirVals[0] >= 1 : true; // no RIR logged -> don't block on it
     var stableOrImproving = result.metrics.loadTrend !== "declining" && result.metrics.repTrend !== "declining";
 
     if (repRangeMet && rirSuggestsRoom && stableOrImproving && decliningStreak === 0) {
       result.state = PROGRESSION_STATES.READY_FOR_LOAD_INCREASE;
-      var inc = loadIncrementFor(exerciseName);
-      var latestTopWeightFinal = topWeightOf(latest);
-      result.reason = "All working sets reached the top of the " + repRange.repMin + "\u2013" + repRange.repMax + " rep target, and performance is stable or improving. Consider a small load increase next session.";
-      result.suggestedAction = {
-        type: "increase_weight",
-        incrementKg: inc,
-        suggestedWeightKg: Math.round((latestTopWeightFinal + inc) * 10) / 10,
-        note: "Conservative +" + inc + "kg step (" + (isLowerBodyExercise(exerciseName) ? "lower-body" : "upper-body") + " default). Adjust to your available plates/dumbbells."
-      };
+      var latestTopFinal = topValueOf(latest, mode);
+      var rangeStr = repRange.repMin + "\u2013" + repRange.repMax + (mode === "time" ? "s" : " rep");
+      if (mode === "time") {
+        // Static holds never get a load suggestion — they progress in time.
+        var nextSec = Math.round(latestTopFinal + TIME_INCREMENT_SEC);
+        result.reason = "Every set reached the top of the " + rangeStr + " hold target, and performance is stable or improving. Add a little time under tension next session.";
+        result.suggestedAction = {
+          type: "increase_time",
+          mode: "time",
+          incrementSeconds: TIME_INCREMENT_SEC,
+          suggestedSeconds: nextSec,
+          displayValue: nextSec + "s",
+          note: "Conservative +" + TIME_INCREMENT_SEC + "s step. Only extend the hold while form and bracing stay clean."
+        };
+      } else if (mode === "reps") {
+        var nextReps = Math.round(latestTopFinal + REP_INCREMENT);
+        result.reason = "Every set reached the top of the " + rangeStr + " target, and performance is stable or improving. Add a clean rep next session.";
+        result.suggestedAction = {
+          type: "increase_reps",
+          mode: "reps",
+          incrementReps: REP_INCREMENT,
+          suggestedReps: nextReps,
+          displayValue: nextReps + " reps",
+          note: "Conservative +" + REP_INCREMENT + " rep step on bodyweight work. Add external load only once the top of the range feels comfortable across all sets."
+        };
+      } else {
+        var inc = loadIncrementFor(exerciseName);
+        var nextKg = Math.round((latestTopFinal + inc) * 10) / 10;
+        result.reason = "All working sets reached the top of the " + rangeStr + " target, and performance is stable or improving. Consider a small load increase next session.";
+        result.suggestedAction = {
+          type: "increase_weight",
+          mode: "weight",
+          incrementKg: inc,
+          suggestedWeightKg: nextKg,
+          displayValue: nextKg + "kg",
+          note: "Conservative +" + inc + "kg step (" + (isLowerBodyExercise(exerciseName) ? "lower-body" : "upper-body") + " default). Adjust to your available plates/dumbbells."
+        };
+      }
     } else if (decliningStreak >= 2) {
       result.state = PROGRESSION_STATES.PERFORMANCE_DECLINING;
       result.reason = "Performance has decreased across " + decliningStreak + " comparable sessions. Consider reviewing recovery, training volume, or exercise execution before adding load.";
@@ -2444,13 +2777,17 @@
       result.reason = "Performance has stayed nearly unchanged for " + stalledStreak + " comparable sessions. This may be a genuine plateau worth addressing.";
     } else if (result.metrics.repTrend === "improving" && repRange && !repRangeMet) {
       result.state = PROGRESSION_STATES.KEEP_WEIGHT;
-      result.reason = "Repetitions are improving, but you haven't yet completed the top of your target rep range across all working sets. Keep the current weight until you do.";
+      result.reason = mode === "time"
+        ? "Hold time is improving, but you haven't yet reached the top of your target hold across all sets. Stay at the current time until you do."
+        : mode === "reps"
+          ? "Reps are improving, but you haven't yet completed the top of your target rep range on every set. Keep going at bodyweight until you do."
+          : "Repetitions are improving, but you haven't yet completed the top of your target rep range across all working sets. Keep the current weight until you do.";
     } else if (stableOrImproving) {
       result.state = PROGRESSION_STATES.PROGRESSING;
       result.reason = "Performance is stable or trending upward. Continue as planned.";
     } else {
       result.state = PROGRESSION_STATES.KEEP_WEIGHT;
-      result.reason = "No clear trend yet — keep the current weight for now.";
+      result.reason = "No clear trend yet — keep the current " + trackingNoun(mode) + " for now.";
     }
 
     return result;
@@ -2515,10 +2852,34 @@
       }
     ];
 
+    // Non-weight tracking modes: a reps-only movement should never be told
+    // to add kilograms, and a static hold should progress in seconds.
+    cases.push({
+      name: "Reps mode — ready for more reps (pull-ups at top of 5-8)",
+      repRange: { numSets: 4, repMin: 5, repMax: 8 },
+      mode: "reps",
+      sessions: [
+        fakeSession("2026-07-14", [{ reps: 8 }, { reps: 8 }, { reps: 8 }, { reps: 8 }], "1"),
+        fakeSession("2026-07-07", [{ reps: 7 }, { reps: 7 }, { reps: 6 }, { reps: 6 }], "1"),
+        fakeSession("2026-06-30", [{ reps: 6 }, { reps: 6 }, { reps: 5 }, { reps: 5 }], "0")
+      ]
+    });
+    cases.push({
+      name: "Time mode — ready for longer holds (plate hold at top of 30-45s)",
+      repRange: { numSets: 3, repMin: 30, repMax: 45 },
+      mode: "time",
+      sessions: [
+        fakeSession("2026-07-14", [{ seconds: 45 }, { seconds: 45 }, { seconds: 46 }], "1"),
+        fakeSession("2026-07-07", [{ seconds: 40 }, { seconds: 38 }, { seconds: 36 }], "1"),
+        fakeSession("2026-06-30", [{ seconds: 34 }, { seconds: 32 }, { seconds: 30 }], "0")
+      ]
+    });
+
     cases.forEach(function (c) {
       var tempKey = "__test__" + c.name;
+      c.sessions.forEach(function (sess) { if (c.mode) sess.mode = c.mode; });
       state.sessionLogs[tempKey] = c.sessions;
-      var result = analyzeExerciseProgression(tempKey, "Test Exercise", c.repRange, { windowWeeks: 8 });
+      var result = analyzeExerciseProgression(tempKey, "Test Exercise", c.repRange, { windowWeeks: 8, mode: c.mode || "weight" });
       delete state.sessionLogs[tempKey];
       console.log("TEST:", c.name);
       console.log("  -> state:", result.state, "| reason:", result.reason);
@@ -2655,22 +3016,33 @@
       var exerciseName = sepIdx === -1 ? key : key.slice(sepIdx + 2);
       var planStr = findExerciseRepRangeString(phaseKey, exerciseName);
       var repRange = parseSetsRepRange(planStr);
-      var analysis = analyzeExerciseProgression(key, exerciseName, repRange);
+      var mode = trackingModeFor(exerciseName, planStr);
+      var analysis = analyzeExerciseProgression(key, exerciseName, repRange, { mode: mode });
       var hist = getSessionHistory(key).slice(0, 3);
 
       snapshot.exercises.push({
         exerciseName: exerciseName,
-        targetRepRange: repRange ? (repRange.repMin + "-" + repRange.repMax) : null,
+        trackingMode: mode,
+        trackingUnit: trackingUnit(mode),
+        targetRange: repRange ? (repRange.repMin + "-" + repRange.repMax + (mode === "time" ? "s" : " reps")) : null,
+        targetRepRange: repRange && mode !== "time" ? (repRange.repMin + "-" + repRange.repMax) : null,
         progressionState: analysis.state,
         recentSessions: hist.map(function (s) {
+          var m = sessionMode(s, exerciseName);
           return {
             date: s.date,
-            sets: s.sets.map(function (set) { return { weightKg: set.weightKg, reps: set.reps }; }),
+            mode: m,
+            sets: s.sets.map(function (set) {
+              if (m === "time") return { seconds: Number(set.seconds) || 0 };
+              if (m === "reps") return { reps: Number(set.reps) || 0 };
+              return { weightKg: set.weightKg, reps: set.reps };
+            }),
             rir: s.rir,
             pain: s.pain
           };
         }),
         metrics: {
+          trackingMode: mode,
           repTrend: analysis.metrics.repTrend,
           loadTrend: analysis.metrics.loadTrend,
           volumeTrendPercent: analysis.metrics.volumeTrendPercent,
@@ -2768,7 +3140,7 @@
       getEffectiveDayExercises(phase.key, dayName).forEach(function (ex) {
         var name = ex[0], planStr = ex[1];
         if (seen[name]) return;
-        if (!parseSetsRepRange(planStr)) return; // rest days / timed holds aren't per-set logged
+        if (!parseSetsRepRange(planStr)) return; // rest days / uncountable finishers aren't per-set logged
         seen[name] = true;
         list.push({ name: name, planStr: planStr });
       });
@@ -2798,10 +3170,11 @@
     exercises.forEach(function (item) {
       var key = exKey(state.phase, null, item.name);
       var repRange = parseSetsRepRange(item.planStr);
-      var analysis = analyzeExerciseProgression(key, item.name, repRange);
+      var mode = trackingModeFor(item.name, item.planStr);
+      var analysis = analyzeExerciseProgression(key, item.name, repRange, { mode: mode });
       var bucket = reviewBucketFor(analysis.state);
       counts[bucket]++;
-      analyzed.push({ key: key, name: item.name, analysis: analysis, bucket: bucket });
+      analyzed.push({ key: key, name: item.name, analysis: analysis, bucket: bucket, mode: mode });
     });
 
     var stats = [
@@ -2842,7 +3215,7 @@
       badge.className = "review-item-badge";
       var colors = PROGRESSION_BADGE_COLORS[a.analysis.state] || PROGRESSION_BADGE_COLORS.INSUFFICIENT_DATA;
       badge.style.background = colors.bg; badge.style.color = colors.fg;
-      badge.textContent = PROGRESSION_LABELS[a.analysis.state] || a.analysis.state;
+      badge.textContent = progressionLabel(a.analysis.state, a.mode);
       nameEl.appendChild(document.createTextNode(" "));
       nameEl.appendChild(badge);
       var reason = document.createElement("div"); reason.className = "review-item-reason"; reason.textContent = a.analysis.reason;
@@ -2854,7 +3227,7 @@
       whyBtn.onclick = function () {
         openAiCoach({
           focusExerciseKey: a.key,
-          question: "Why is " + a.name + " showing \u201c" + (PROGRESSION_LABELS[a.analysis.state] || a.analysis.state) + "\u201d, and what should I do next session?"
+          question: "Why is " + a.name + " showing \u201c" + progressionLabel(a.analysis.state, a.mode) + "\u201d, and what should I do next session?"
         });
       };
 
@@ -2862,6 +3235,160 @@
       row.appendChild(whyBtn);
       list.appendChild(row);
     });
+  }
+
+
+  // =========================================================
+  // EXPORT — AI-ready plain-text training report (all history)
+  // =========================================================
+  function fmtNum(n) {
+    var v = Math.round(Number(n) * 10) / 10;
+    return isNaN(v) ? "0" : String(v);
+  }
+
+  function buildAiReport() {
+    var L = [];
+    var now = new Date();
+    var phase = getPhase(state.phase);
+
+    L.push("GYM GRIND — TRAINING REPORT");
+    L.push("Generated: " + now.toISOString().slice(0, 16).replace("T", " ") + " (local date " + dateKey(now) + ")");
+    L.push("Current phase: " + phase.pLabel + " — " + phase.title);
+    L.push("Note: logged set history is kept on a rolling " + DATA_RETENTION_DAYS + "-day window, so older sessions may be absent.");
+    L.push("");
+
+    // ---- Current phase plan ----
+    L.push("== CURRENT PLAN (per weekday) ==");
+    DAY_NAMES.forEach(function (day) {
+      var d = phase.days[day];
+      if (!d) return;
+      L.push(day + " — " + d.title);
+      getEffectiveDayExercises(phase.key, day).forEach(function (ex) {
+        var swapped = ex[0] !== ex[2] ? "  [swapped from: " + ex[2] + "]" : "";
+        L.push("  - " + ex[0] + " | " + ex[1] + swapped);
+      });
+    });
+    L.push("");
+
+    // ---- Progression review ----
+    L.push("== PROGRESSION REVIEW (this phase) ==");
+    var reviewed = 0;
+    collectCurrentPhaseExercises().forEach(function (item) {
+      var key = exKey(state.phase, null, item.name);
+      var repRange = parseSetsRepRange(item.planStr);
+      var mode = trackingModeFor(item.name, item.planStr);
+      var a = analyzeExerciseProgression(key, item.name, repRange, { mode: mode });
+      if (!a) return;
+      reviewed++;
+      L.push("- " + item.name + " (tracked in " + trackingNoun(mode) + ") [" + progressionLabel(a.state, mode) + "] " + (a.reason || "") +
+        (a.suggestedAction ? " Suggested next: " + a.suggestedAction.displayValue + "." : ""));
+    });
+    if (!reviewed) L.push("(no exercises analysed yet)");
+    L.push("");
+
+    // ---- Full session history ----
+    L.push("== LOGGED SESSIONS (all stored history, newest first) ==");
+    var keys = Object.keys(state.sessionLogs).sort();
+    if (!keys.length) L.push("(no sessions logged)");
+    var totalSessions = 0, totalSets = 0, totalVolume = 0, dates = {};
+    keys.forEach(function (key) {
+      var sepIdx = key.indexOf("::");
+      var exName = sepIdx === -1 ? key : key.slice(sepIdx + 2);
+      var phaseKey = sepIdx === -1 ? "?" : key.slice(0, sepIdx);
+      var hist = state.sessionLogs[key] || [];
+      if (!hist.length) return;
+      var exMode = sessionMode(hist[0], exName);
+      L.push(exName + "  (phase " + phaseKey + ", muscle group: " + (muscleGroupFor(exName) || "n/a") + ", tracked in " + trackingNoun(exMode) + ")");
+      hist.forEach(function (s) {
+        totalSessions++;
+        dates[s.date] = true;
+        var sMode = sessionMode(s, exName);
+        var vol = computeSessionVolume(s, sMode);
+        // Only externally loaded work contributes to the kg-volume total.
+        if (sMode === "weight") totalVolume += vol;
+        var sets = (s.sets || []).map(function (st) {
+          totalSets++;
+          return formatSetValue(st, sMode);
+        }).join(", ");
+        var extra = [];
+        if (s.rir !== undefined && s.rir !== null && s.rir !== "") extra.push("RIR " + s.rir);
+        if (s.pain) extra.push("pain: " + s.pain);
+        if (s.targetRepMin) extra.push("target " + s.targetRepMin + (s.targetRepMax && s.targetRepMax !== s.targetRepMin ? "-" + s.targetRepMax : "") + (sMode === "time" ? "s hold" : " reps"));
+        if (s.note) extra.push("note: " + s.note);
+        var volLabel = sMode === "time" ? "total hold " + fmtNum(vol) + "s"
+          : sMode === "reps" ? "total reps " + fmtNum(vol)
+          : "volume " + fmtNum(vol) + "kg";
+        L.push("  " + s.date + " | " + (sets || "no sets") + " | " + volLabel + (extra.length ? " | " + extra.join(" | ") : ""));
+      });
+    });
+    L.push("");
+
+    // ---- Legacy weight badges ----
+    var wKeys = Object.keys(state.weightLogs).sort();
+    if (wKeys.length) {
+      L.push("== QUICK WEIGHT LOG (single value per day) ==");
+      wKeys.forEach(function (key) {
+        var sepIdx = key.indexOf("::");
+        var exName = sepIdx === -1 ? key : key.slice(sepIdx + 2);
+        var entries = (state.weightLogs[key] || []).map(function (e) { return e.date + ": " + fmtNum(e.weight) + "kg"; });
+        if (entries.length) L.push("- " + exName + " → " + entries.join(", "));
+      });
+      L.push("");
+    }
+
+    // ---- Weekly muscle-group volume ----
+    L.push("== WORKING SETS PER MUSCLE GROUP ==");
+    [7, 14, 21].forEach(function (win) {
+      var v = computeWeeklyMuscleVolume(win);
+      var parts = Object.keys(v).sort().map(function (m) { return m + ": " + v[m]; });
+      L.push("Last " + win + " days — " + (parts.length ? parts.join(", ") : "no sets logged"));
+    });
+    L.push("");
+
+    // ---- Totals ----
+    L.push("== TOTALS ==");
+    L.push("Distinct training days logged: " + Object.keys(dates).length);
+    L.push("Exercise-sessions logged: " + totalSessions);
+    L.push("Working sets logged: " + totalSets);
+    L.push("Total volume load (weighted exercises only): " + fmtNum(totalVolume) + " kg");
+    L.push("");
+
+    L.push("== ASK THE AI ==");
+    L.push("Using the data above, review my training: what is progressing, what is stalling,");
+    L.push("where is my volume unbalanced, and what exactly should I change next week?");
+
+    return L.join("\n");
+  }
+
+  function flashExportBtn(btn, text) {
+    if (!btn) return;
+    var prev = btn.textContent;
+    btn.textContent = text;
+    setTimeout(function () { btn.textContent = prev; }, 1800);
+  }
+
+  function downloadAiReport() {
+    var text = buildAiReport();
+    var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "gym-grind-report-" + dateKey(new Date()) + ".txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  async function copyAiReport(btn) {
+    var text = buildAiReport();
+    try {
+      await navigator.clipboard.writeText(text);
+      flashExportBtn(btn, "Copied ✓");
+    } catch (err) {
+      console.error("Clipboard copy failed", err);
+      flashExportBtn(btn, "Copy failed");
+    }
   }
 
   // ---- Chat panel open/close ----
@@ -3071,16 +3598,21 @@
   // set order. Validates and drops obviously bad rows (negative/NaN)
   // rather than rejecting the whole save, since a lifter mid-workout
   // shouldn't lose an otherwise-good entry over one bad field.
-  function logSessionSets(key, setsArr, repRange, rir, pain, note) {
+  function logSessionSets(key, setsArr, repRange, rir, pain, note, mode) {
+    mode = mode || "weight";
     var cleanSets = (setsArr || [])
       .map(function (s, i) {
-        return {
-          setNumber: i + 1,
-          weightKg: Number(s.weightKg),
-          reps: Number(s.reps)
-        };
+        if (mode === "time") {
+          return { setNumber: i + 1, weightKg: null, reps: null, seconds: Number(s.seconds), isWarmup: !!s.isWarmup };
+        }
+        if (mode === "reps") {
+          return { setNumber: i + 1, weightKg: null, reps: Number(s.reps), isWarmup: !!s.isWarmup };
+        }
+        return { setNumber: i + 1, weightKg: Number(s.weightKg), reps: Number(s.reps), isWarmup: !!s.isWarmup };
       })
       .filter(function (s) {
+        if (mode === "time") return !isNaN(s.seconds) && s.seconds > 0;
+        if (mode === "reps") return !isNaN(s.reps) && s.reps >= 0;
         return !isNaN(s.weightKg) && !isNaN(s.reps) && s.weightKg >= 0 && s.reps >= 0;
       });
     if (!cleanSets.length) return false;
@@ -3091,6 +3623,7 @@
 
     var session = {
       date: today,
+      mode: mode,
       targetRepMin: repRange ? repRange.repMin : null,
       targetRepMax: repRange ? repRange.repMax : null,
       sets: cleanSets,
@@ -3107,10 +3640,450 @@
     if (hist.length > SESSION_LOG_CAP) hist.length = SESSION_LOG_CAP;
 
     // Keep the legacy weightLogs badge in sync using the heaviest working
-    // set, so the old "last: Xkg" comparison still means something.
-    var topSet = cleanSets.reduce(function (max, s) { return s.weightKg > max.weightKg ? s : max; }, cleanSets[0]);
-    logWeight(key, topSet.weightKg); // also calls saveState()
+    // (non-warm-up) set, so the old "last: Xkg" comparison still means
+    // something. Falls back to the heaviest set overall if every set on
+    // this row was marked warm-up (better than showing nothing).
+    var workingSets = cleanSets.filter(function (s) { return !s.isWarmup; });
+    var pool = workingSets.length ? workingSets : cleanSets;
+    var topSet = pool.reduce(function (max, s) {
+      return setPrimaryValue(s, mode) > setPrimaryValue(max, mode) ? s : max;
+    }, pool[0]);
+    // The legacy single-value badge only ever meant kilograms, so it is
+    // only kept in sync for weight-tracked movements.
+    if (mode === "weight") logWeight(key, topSet.weightKg);
+
+    // PART 2 — permanent PR tracking + training-log/streak entry, built only
+    // from working sets (warm-ups never count as a PR or a progression
+    // signal). This is intentionally independent of the 21-day sessionLogs
+    // purge above, so PR history and "first recorded performance" survive
+    // long after the raw sets themselves have rolled off.
+    updateExercisePR(key, workingSets, today, mode);
+    recordTrainingDay(today, "gym");
+
+    saveState();
     return true;
+  }
+
+  // ---------------------------------------------------------
+  // PART 2 — Permanent progression/PR tracking
+  // Small append-only record per exercise, updated every time working
+  // sets are logged. Independent of the rolling sessionLogs purge.
+  // ---------------------------------------------------------
+  var PR_HISTORY_CAP = 200; // generous — this is one small entry per PR, not per set
+
+  function epley1RM(weightKg, reps) {
+    if (!weightKg || !reps) return 0;
+    var cappedReps = Math.min(reps, 12); // formula gets unreliable at very high reps
+    return Math.round(weightKg * (1 + cappedReps / 30) * 10) / 10;
+  }
+
+  // A new best is treated as a real PR unless it's implausibly larger than
+  // the previous best (a strong sign of a typo, e.g. "100" instead of
+  // "10"). Flagged entries are still recorded (never silently deleted /
+  // discarded) but are excluded from the best/PR figures — per PART M.
+  function isImplausibleJump(newVal, prevBest) {
+    return prevBest > 0 && newVal > prevBest * 2;
+  }
+
+  function updateExercisePR(key, workingSets, dateStr, mode) {
+    if (!workingSets || !workingSets.length) return;
+    mode = mode || "weight";
+    if (!state.exercisePR[key]) {
+      state.exercisePR[key] = {
+        mode: mode,
+        firstDate: dateStr, firstValue: null, firstWeightKg: null, firstReps: null, firstSeconds: null,
+        bestValue: 0, bestWeightKg: 0, bestReps: 0, bestSeconds: 0, bestVolume: 0, best1RM: 0,
+        prevBestValue: 0, prevBestWeightKg: 0, prevBestReps: 0,
+        prDate: null, prHistory: []
+      };
+    }
+    var rec = state.exercisePR[key];
+    rec.mode = mode;
+    // Migrate pre-mode records, which only ever stored kilograms.
+    if (rec.bestValue === undefined || rec.bestValue === null) rec.bestValue = rec.bestWeightKg || 0;
+    if (rec.firstValue === undefined) rec.firstValue = (rec.firstWeightKg === undefined ? null : rec.firstWeightKg);
+    if (rec.prevBestValue === undefined || rec.prevBestValue === null) rec.prevBestValue = rec.prevBestWeightKg || 0;
+
+    // Best set of the day in this exercise's own metric.
+    var topSet = workingSets.reduce(function (m, s) {
+      return setPrimaryValue(s, mode) > setPrimaryValue(m, mode) ? s : m;
+    }, workingSets[0]);
+    var topValue = setPrimaryValue(topSet, mode);
+    var topReps = mode === "weight" ? (Number(topSet.reps) || 0) : 0;
+
+    // Secondary signal: best single-set volume load for weighted work,
+    // total reps / total seconds for the other two modes.
+    var topVolume = mode === "weight"
+      ? Math.max.apply(null, workingSets.map(function (s) { return (Number(s.weightKg) || 0) * (Number(s.reps) || 0); }))
+      : workingSets.reduce(function (t, s) { return t + setPrimaryValue(s, mode); }, 0);
+    // Estimated 1RM only makes sense for external load.
+    var e1rm = mode === "weight" ? epley1RM(topSet.weightKg, topSet.reps) : 0;
+
+    if (rec.firstValue === null || rec.firstValue === undefined) {
+      rec.firstValue = topValue;
+      rec.firstWeightKg = mode === "weight" ? topValue : null;
+      rec.firstReps = mode === "time" ? null : (mode === "weight" ? (Number(topSet.reps) || 0) : topValue);
+      rec.firstSeconds = mode === "time" ? topValue : null;
+    }
+
+    var flagged = isImplausibleJump(topValue, rec.bestValue);
+    var isPR = !flagged && (
+      topValue > rec.bestValue ||
+      (mode === "weight" && topValue === rec.bestValue && topReps > rec.bestReps)
+    );
+
+    if (isPR) {
+      rec.prevBestValue = rec.bestValue;
+      rec.prevBestWeightKg = rec.bestWeightKg;
+      rec.prevBestReps = rec.bestReps;
+      rec.bestValue = topValue;
+      if (mode === "weight") {
+        rec.bestWeightKg = topValue;
+        rec.bestReps = topReps;
+      } else if (mode === "reps") {
+        rec.bestReps = topValue;
+        rec.bestWeightKg = 0;
+      } else {
+        rec.bestSeconds = topValue;
+        rec.bestWeightKg = 0;
+      }
+      rec.prDate = dateStr;
+    }
+    if (!flagged && topVolume > rec.bestVolume) rec.bestVolume = topVolume;
+    if (!flagged && e1rm > rec.best1RM) rec.best1RM = e1rm;
+
+    // One PR-history entry per logging day per exercise (edits today's
+    // entry in place, same "one session per day" rule as sessionLogs).
+    var todaysEntry = {
+      date: dateStr,
+      mode: mode,
+      value: topValue,
+      weightKg: mode === "weight" ? topSet.weightKg : null,
+      reps: mode === "time" ? null : (mode === "weight" ? topSet.reps : topValue),
+      seconds: mode === "time" ? topValue : null,
+      e1rm: e1rm || null,
+      flagged: flagged
+    };
+    if (rec.prHistory.length && rec.prHistory[0].date === dateStr) {
+      rec.prHistory[0] = todaysEntry;
+    } else {
+      rec.prHistory.unshift(todaysEntry);
+    }
+    if (rec.prHistory.length > PR_HISTORY_CAP) rec.prHistory.length = PR_HISTORY_CAP;
+  }
+
+  function pctChange(from, to) {
+    if (!from) return null;
+    return Math.round(((to - from) / from) * 1000) / 10;
+  }
+
+  // One entry per calendar day — logging multiple exercises the same day
+  // doesn't create duplicate training-log rows.
+  function recordTrainingDay(dateStr, type) {
+    var existing = state.trainingLog.filter(function (e) { return e.date === dateStr; });
+    if (existing.length) {
+      if (type === "futsal" && existing[0].type !== "futsal") existing[0].type = "futsal";
+      return;
+    }
+    state.trainingLog.push({ date: dateStr, type: type });
+    state.trainingLog.sort(function (a, b) { return a.date < b.date ? 1 : -1; }); // newest first
+    if (state.trainingLog.length > 550) state.trainingLog.length = 550; // ~ over a year, generous
+  }
+
+  // Manual "futsal done" logger — Saturday has no loggable exercises, so
+  // this is the only way a futsal session registers for consistency stats.
+  function logFutsalToday() {
+    recordTrainingDay(dateKey(new Date()), "futsal");
+    saveState();
+  }
+
+  // ---------------------------------------------------------
+  // Sync layer: Workouts -> Progress
+  // Rebuilds exercisePR + trainingLog from whatever per-set history exists
+  // in state.sessionLogs. Runs on every load and is idempotent: existing PR
+  // records/training days are preserved, only missing days are folded in.
+  // This is what makes sessions logged on previous days (including data that
+  // predates the Progress page) show up in Strength, PRs and Consistency.
+  // ---------------------------------------------------------
+  function backfillProgressFromSessionLogs() {
+    if (!state.sessionLogs) return;
+    var changed = false;
+
+    Object.keys(state.sessionLogs).forEach(function (key) {
+      var sessions = state.sessionLogs[key] || [];
+      var exNameForKey = key.indexOf("::") === -1 ? key : key.slice(key.indexOf("::") + 2);
+      var keyMode = sessions.length ? sessionMode(sessions[0], exNameForKey) : trackingModeFor(exNameForKey);
+      // date -> working sets logged that day
+      var byDate = {};
+      sessions.forEach(function (s) {
+        if (!s || !s.date) return;
+        var m = sessionMode(s, exNameForKey);
+        var sets = (s.sets || []).filter(function (x) {
+          return x && !x.isWarmup && setPrimaryValue(x, m) > 0;
+        });
+        if (sets.length) byDate[s.date] = sets;
+      });
+      if (!Object.keys(byDate).length) return;
+
+      var rec = state.exercisePR[key];
+      var known = {};
+      if (rec && rec.prHistory) rec.prHistory.forEach(function (h) { known[h.date] = true; });
+
+      var missing = Object.keys(byDate).filter(function (d) { return !known[d]; });
+      if (!missing.length) return; // already in sync
+
+      // Keep days that only exist in the PR history (raw sets already purged)
+      // by reconstructing a single-set stand-in for them.
+      if (rec && rec.prHistory) {
+        rec.prHistory.forEach(function (h) {
+          if (!byDate[h.date]) byDate[h.date] = [{ weightKg: h.weightKg, reps: h.reps, seconds: h.seconds }];
+        });
+      }
+
+      var firstRecorded = rec && (rec.firstValue !== null && rec.firstValue !== undefined
+        ? rec.firstValue : rec.firstWeightKg);
+      var preservedFirst = (firstRecorded !== null && firstRecorded !== undefined)
+        ? { date: rec.firstDate, value: firstRecorded, weightKg: rec.firstWeightKg, reps: rec.firstReps, seconds: rec.firstSeconds } : null;
+
+      // Replay every day oldest -> newest so bests, PR dates and % gains are
+      // chronologically correct rather than depending on logging order.
+      delete state.exercisePR[key];
+      Object.keys(byDate).sort().forEach(function (d) {
+        updateExercisePR(key, byDate[d], d, keyMode);
+      });
+
+      var rebuilt = state.exercisePR[key];
+      if (rebuilt && preservedFirst && preservedFirst.date && preservedFirst.date < rebuilt.firstDate) {
+        rebuilt.firstDate = preservedFirst.date;
+        rebuilt.firstValue = preservedFirst.value;
+        rebuilt.firstWeightKg = preservedFirst.weightKg;
+        rebuilt.firstReps = preservedFirst.reps;
+        rebuilt.firstSeconds = preservedFirst.seconds;
+      }
+      changed = true;
+    });
+
+    // Every day with logged sets is a gym day for streak/consistency stats.
+    var logged = {};
+    Object.keys(state.sessionLogs).forEach(function (key) {
+      (state.sessionLogs[key] || []).forEach(function (s) { if (s && s.date) logged[s.date] = true; });
+    });
+    var existingDates = {};
+    state.trainingLog.forEach(function (e) { existingDates[e.date] = true; });
+    Object.keys(logged).sort().forEach(function (d) {
+      if (!existingDates[d]) { recordTrainingDay(d, "gym"); changed = true; }
+    });
+
+    return changed;
+  }
+
+
+  // ---------------------------------------------------------
+  // PART 2/3 — data-quality helpers, bodyweight/measurement/goal CRUD,
+  // and consistency/streak aggregation for the Progress page.
+  // ---------------------------------------------------------
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+  function addBodyWeightEntry(dateStr, weightKg, note) {
+    if (isNaN(weightKg)) return;
+    var existing = state.bodyWeightEntries.find(function (e) { return e.date === dateStr; });
+    if (existing) { existing.weightKg = weightKg; existing.note = note || ""; }
+    else state.bodyWeightEntries.push({ id: uid(), date: dateStr, weightKg: weightKg, note: note || "" });
+    state.bodyWeightEntries.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    saveState();
+  }
+  function deleteBodyWeightEntry(id) {
+    state.bodyWeightEntries = state.bodyWeightEntries.filter(function (e) { return e.id !== id; });
+    saveState();
+  }
+
+  var MEASUREMENT_FIELDS = ["waist", "chest", "rightBiceps", "leftBiceps", "rightThigh", "leftThigh", "shoulders", "rightCalf", "leftCalf", "hips", "neck"];
+  function addMeasurementSession(dateStr, unit, values, notes) {
+    var session = { id: uid(), date: dateStr, unit: unit || "cm", notes: notes || "" };
+    var hasAny = false;
+    MEASUREMENT_FIELDS.forEach(function (f) {
+      var v = values[f];
+      if (v === "" || v === undefined || v === null || isNaN(v)) { session[f] = null; }
+      else { session[f] = Number(v); hasAny = true; }
+    });
+    if (!hasAny) return false;
+    var existingIdx = state.measurementSessions.findIndex(function (e) { return e.date === dateStr; });
+    if (existingIdx >= 0) state.measurementSessions[existingIdx] = session;
+    else state.measurementSessions.push(session);
+    state.measurementSessions.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    saveState();
+    return true;
+  }
+  function deleteMeasurementSession(id) {
+    state.measurementSessions = state.measurementSessions.filter(function (e) { return e.id !== id; });
+    saveState();
+  }
+
+  // cm is the canonical stored unit — inches are converted on the way in
+  // and only converted back for display, so charts stay correct regardless
+  // of which unit was used to log any given session.
+  function toCm(value, unit) { return unit === "in" ? value * 2.54 : value; }
+  function fromCm(valueCm, unit) { return unit === "in" ? valueCm / 2.54 : valueCm; }
+
+  function addGoal(name, metricType, target, targetDate) {
+    var current = currentValueForMetric(metricType);
+    state.goals.push({
+      id: uid(), name: name, metricType: metricType, target: Number(target),
+      start: current, targetDate: targetDate || null, completed: false, createdAt: dateKey(new Date())
+    });
+    saveState();
+  }
+  function deleteGoal(id) {
+    state.goals = state.goals.filter(function (g) { return g.id !== id; });
+    saveState();
+  }
+  function toggleGoalCompleted(id) {
+    var g = state.goals.find(function (g) { return g.id === id; });
+    if (g) { g.completed = !g.completed; saveState(); }
+  }
+
+  // Looks up the current value for a goal's metric from the live data
+  // (bodyweight, latest measurement, or an exercise's tracked best) so
+  // goal progress never needs manual updating.
+  function currentValueForMetric(metricType) {
+    if (metricType === "bodyweight") {
+      return state.bodyWeightEntries.length ? state.bodyWeightEntries[0].weightKg : null;
+    }
+    if (MEASUREMENT_FIELDS.indexOf(metricType) !== -1) {
+      var latest = state.measurementSessions.find(function (s) { return s[metricType] !== null && s[metricType] !== undefined; });
+      return latest ? toCm(latest[metricType], latest.unit) : null;
+    }
+    if (metricType === "pullups") {
+      var rec = state.exercisePR[exKey(state.phase, null, "Pull-ups (or Lat Pulldown)")] || state.exercisePR[exKey(state.phase, null, "Pull-ups")];
+      return rec ? rec.bestReps : null;
+    }
+    if (metricType === "bench") {
+      var r = state.exercisePR[exKey(state.phase, null, "Barbell Bench Press")];
+      return r ? r.bestWeightKg : null;
+    }
+    if (metricType === "squat") {
+      var r2 = state.exercisePR[exKey(state.phase, null, "Barbell Squat")];
+      return r2 ? r2.bestWeightKg : null;
+    }
+    return null;
+  }
+
+  function goalProgressPercent(goal) {
+    var current = currentValueForMetric(goal.metricType);
+    if (current === null || current === undefined) current = goal.start;
+    if (current === null || current === undefined) return 0;
+    var start = goal.start === null || goal.start === undefined ? 0 : goal.start;
+    var span = goal.target - start;
+    if (span === 0) return current >= goal.target ? 100 : 0;
+    var pct = ((current - start) / span) * 100;
+    return Math.max(0, Math.min(100, Math.round(pct)));
+  }
+
+  // ---- Weekly schedule + consistency ----
+  // Wed is always Rest and never counted as a missed workout; Sat is a
+  // futsal day (counts when logged via logFutsalToday, not gym sets).
+  var SCHEDULED_GYM_DAYS = ["Sun", "Mon", "Tue", "Thu", "Fri"]; // Sun = light lower/core, per current p1 schedule
+
+  function trainingDatesSet() {
+    var s = {};
+    state.trainingLog.forEach(function (e) { s[e.date] = e.type; });
+    return s;
+  }
+
+  function computeConsistency() {
+    var byDate = trainingDatesSet();
+    var allDates = Object.keys(byDate).sort(); // ascending
+    var now = new Date();
+
+    function countSince(daysAgo, type) {
+      var cutoff = dateKey(new Date(now.getTime() - daysAgo * 86400000));
+      return allDates.filter(function (d) { return d >= cutoff && (!type || byDate[d] === type); }).length;
+    }
+
+    // Current streak: walk backward from today; Wednesdays (rest) never
+    // break the streak, any other scheduled day with no logged session does.
+    var streak = 0, cursor = new Date(now);
+    for (var guard = 0; guard < 400; guard++) {
+      var dow = DAY_NAMES[cursor.getDay()];
+      var dk = dateKey(cursor);
+      if (dow === "Wed") { cursor.setDate(cursor.getDate() - 1); continue; }
+      if (byDate[dk]) { streak++; cursor.setDate(cursor.getDate() - 1); continue; }
+      if (dk === dateKey(now)) { cursor.setDate(cursor.getDate() - 1); continue; } // today not logged yet is fine
+      break;
+    }
+
+    // Best streak over recorded history, same Wed-skip rule.
+    var best = 0, run = 0;
+    if (allDates.length) {
+      var start = new Date(allDates[0]), end = new Date(now);
+      for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        var dw = DAY_NAMES[d.getDay()], k = dateKey(d);
+        if (dw === "Wed") continue;
+        if (byDate[k]) { run++; best = Math.max(best, run); }
+        else if (k !== dateKey(now)) { run = 0; }
+      }
+    }
+
+    return {
+      gymSessionsTotal: allDates.filter(function (d) { return byDate[d] === "gym"; }).length,
+      futsalSessionsTotal: allDates.filter(function (d) { return byDate[d] === "futsal"; }).length,
+      weeklyCount: countSince(7),
+      monthlyCount: countSince(30),
+      currentStreak: streak,
+      bestStreak: best
+    };
+  }
+
+  // Exercise names the Strength section highlights by default (PART E).
+  var FEATURED_STRENGTH_EXERCISES = [
+    "Barbell Bench Press", "Barbell Squat", "Romanian Deadlift", "Incline Dumbbell Press",
+    "Pull-ups (or Lat Pulldown)", "Barbell/Dumbbell Row", "Seated Dumbbell Shoulder Press", "Leg Press"
+  ];
+
+  // Formats a ready-to-render summary for one exercise from its permanent
+  // PR record — current/previous best, PR date, % improvement from first
+  // recorded performance and from the previous best, and estimated 1RM.
+  function getExerciseStats(exerciseName) {
+    var key = exKey(state.phase, null, exerciseName);
+    var rec = state.exercisePR[key];
+    if (!rec) return null;
+    var mode = rec.mode || trackingModeFor(exerciseName);
+    // Legacy records only stored kilograms; treat that as the value.
+    var bestValue = (rec.bestValue !== null && rec.bestValue !== undefined && rec.bestValue !== 0)
+      ? rec.bestValue : (rec.bestWeightKg || 0);
+    if (!bestValue) return null;
+    var firstValue = (rec.firstValue !== null && rec.firstValue !== undefined)
+      ? rec.firstValue : rec.firstWeightKg;
+    var prevBestValue = (rec.prevBestValue !== null && rec.prevBestValue !== undefined && rec.prevBestValue !== 0)
+      ? rec.prevBestValue : (rec.prevBestWeightKg || null);
+    return {
+      name: exerciseName,
+      key: key,
+      mode: mode,
+      bestValue: bestValue,
+      bestValueLabel: formatMetricValue(bestValue, mode),
+      bestWeightKg: mode === "weight" ? rec.bestWeightKg : null,
+      bestReps: mode === "time" ? null : (rec.bestReps || null),
+      bestSeconds: mode === "time" ? (rec.bestSeconds || bestValue) : null,
+      prevBestValue: prevBestValue,
+      prevBestValueLabel: prevBestValue ? formatMetricValue(prevBestValue, mode) : null,
+      prevBestWeightKg: mode === "weight" ? (rec.prevBestWeightKg || null) : null,
+      prevBestReps: mode === "time" ? null : (rec.prevBestReps || null),
+      best1RM: mode === "weight" ? (rec.best1RM || null) : null,
+      prDate: rec.prDate,
+      firstValue: firstValue,
+      firstWeightKg: rec.firstWeightKg,
+      firstReps: rec.firstReps,
+      pctFromFirst: pctChange(firstValue, bestValue),
+      pctFromPrevious: prevBestValue ? pctChange(prevBestValue, bestValue) : null,
+      // Oldest -> newest, for charting. `value` is the mode's own metric.
+      history: rec.prHistory.slice().reverse()
+        .filter(function (h) { return !h.flagged; })
+        .map(function (h) {
+          var v = (h.value !== null && h.value !== undefined) ? h.value : h.weightKg;
+          return { date: h.date, value: v, weightKg: h.weightKg, reps: h.reps, seconds: h.seconds, e1rm: h.e1rm };
+        })
+    };
   }
 
   // =========================================================
@@ -3454,9 +4427,10 @@
   // and note. Shows a compact summary of the last session plus a trend
   // badge, with an expandable panel to log today's sets and a separate
   // expandable panel to browse/delete past sessions.
-  function renderSetLoggerCell(c3, key, repRange, exerciseName) {
+  function renderSetLoggerCell(c3, key, repRange, exerciseName, planStr) {
     var cell = document.createElement("div");
     cell.className = "set-logger-cell";
+    var mode = trackingModeFor(exerciseName, planStr);
     var today = dateKey(new Date());
     var hist = getSessionHistory(key);
     var lastSession = getLastSession(key);
@@ -3468,9 +4442,8 @@
     if (lastSession) {
       var summaryText = document.createElement("span");
       summaryText.className = "logger-last mono";
-      var repsStr = lastSession.sets.map(function (s) { return s.reps; }).join("/");
-      var topW = Math.max.apply(null, lastSession.sets.map(function (s) { return s.weightKg; }));
-      summaryText.textContent = (lastSession.date === today ? "today: " : "last: ") + topW + "kg \u00d7 " + repsStr;
+      summaryText.textContent = (lastSession.date === today ? "today: " : "last: ") +
+        formatSessionSummary(lastSession, sessionMode(lastSession, exerciseName));
       if (lastSession.rir !== null && lastSession.rir !== undefined && lastSession.rir !== "") {
         summaryText.textContent += " \u00b7 RIR " + lastSession.rir;
       }
@@ -3489,7 +4462,7 @@
         painBadge.textContent = "\u26a0 pain flagged";
         summary.appendChild(painBadge);
       }
-      var estRM = estimateOneRepMax(lastSession);
+      var estRM = estimateOneRepMax(lastSession, sessionMode(lastSession, exerciseName));
       if (estRM) {
         var rmBadge = document.createElement("span");
         rmBadge.className = "rm-badge";
@@ -3505,13 +4478,13 @@
     }
     cell.appendChild(summary);
 
-    var sparkline = buildTopSetSparkline(key);
+    var sparkline = buildTopSetSparkline(key, 8, mode);
     if (sparkline) {
       var sparkWrap = document.createElement("div");
       sparkWrap.className = "spark-wrap";
       var sparkLabel = document.createElement("span");
       sparkLabel.className = "spark-label";
-      sparkLabel.textContent = "top set";
+      sparkLabel.textContent = mode === "time" ? "best hold" : mode === "reps" ? "best set (reps)" : "top set";
       sparkWrap.appendChild(sparkLabel);
       sparkWrap.appendChild(sparkline);
       cell.appendChild(sparkWrap);
@@ -3520,20 +4493,21 @@
     // Stage 3 — local progression engine badge + explanation. Runs on
     // every render; it's a cheap pure function over already-loaded history.
     if (hist.length) {
-      var analysis = analyzeExerciseProgression(key, exerciseName || key, repRange);
+      var analysis = analyzeExerciseProgression(key, exerciseName || key, repRange, { mode: mode });
       var progRow = document.createElement("div");
       progRow.className = "prog-row";
 
       var progBadge = document.createElement("div");
       progBadge.className = "prog-badge prog-" + analysis.state;
-      progBadge.textContent = PROGRESSION_LABELS[analysis.state];
+      progBadge.textContent = progressionLabel(analysis.state, mode);
       progBadge.title = analysis.reason;
       progRow.appendChild(progBadge);
 
       if (analysis.suggestedAction) {
         var suggestEl = document.createElement("div");
         suggestEl.className = "prog-suggest";
-        suggestEl.textContent = "Suggested next: " + analysis.suggestedAction.suggestedWeightKg + "kg";
+        suggestEl.textContent = "Suggested next: " + analysis.suggestedAction.displayValue;
+        suggestEl.title = analysis.suggestedAction.note || "";
         progRow.appendChild(suggestEl);
       }
 
@@ -3582,46 +4556,85 @@
         setLabel.textContent = "Set " + (i + 1);
         setRow.appendChild(setLabel);
 
-        var wInput = document.createElement("input");
-        wInput.type = "number";
-        wInput.step = "0.5";
-        wInput.min = "0";
-        wInput.className = "logger-input";
-        wInput.placeholder = "kg";
-        if (prefillSets[i]) wInput.value = prefillSets[i].weightKg;
-        setRow.appendChild(wInput);
+        // Inputs match the exercise's tracking mode: kg x reps for loaded
+        // work, a single reps box for bodyweight rep movements, and a
+        // single seconds box for static holds.
+        var wInput = null, rInput = null, secInput = null;
 
-        var xEl = document.createElement("span");
-        xEl.className = "mono";
-        xEl.textContent = "\u00d7";
-        setRow.appendChild(xEl);
+        if (mode === "weight") {
+          wInput = document.createElement("input");
+          wInput.type = "number";
+          wInput.step = "0.5";
+          wInput.min = "0";
+          wInput.className = "logger-input";
+          wInput.placeholder = "kg";
+          wInput.setAttribute("aria-label", "Set " + (i + 1) + " weight in kilograms");
+          if (prefillSets[i] && prefillSets[i].weightKg !== null && prefillSets[i].weightKg !== undefined) wInput.value = prefillSets[i].weightKg;
+          setRow.appendChild(wInput);
 
-        var rInput = document.createElement("input");
-        rInput.type = "number";
-        rInput.step = "1";
-        rInput.min = "0";
-        rInput.className = "logger-input";
-        rInput.placeholder = "reps";
-        if (prefillSets[i]) rInput.value = prefillSets[i].reps;
-        setRow.appendChild(rInput);
+          var xEl = document.createElement("span");
+          xEl.className = "mono";
+          xEl.textContent = "\u00d7";
+          setRow.appendChild(xEl);
+        }
+
+        if (mode === "weight" || mode === "reps") {
+          rInput = document.createElement("input");
+          rInput.type = "number";
+          rInput.step = "1";
+          rInput.min = "0";
+          rInput.className = "logger-input";
+          rInput.placeholder = "reps";
+          rInput.setAttribute("aria-label", "Set " + (i + 1) + " reps");
+          if (prefillSets[i] && prefillSets[i].reps !== null && prefillSets[i].reps !== undefined) rInput.value = prefillSets[i].reps;
+          setRow.appendChild(rInput);
+        } else {
+          secInput = document.createElement("input");
+          secInput.type = "number";
+          secInput.step = "1";
+          secInput.min = "0";
+          secInput.className = "logger-input";
+          secInput.placeholder = "sec";
+          secInput.setAttribute("aria-label", "Set " + (i + 1) + " hold time in seconds");
+          if (prefillSets[i] && prefillSets[i].seconds !== null && prefillSets[i].seconds !== undefined) secInput.value = prefillSets[i].seconds;
+          setRow.appendChild(secInput);
+
+          var sUnit = document.createElement("span");
+          sUnit.className = "mono";
+          sUnit.textContent = "s";
+          setRow.appendChild(sUnit);
+        }
 
         var targetHint = document.createElement("span");
         targetHint.className = "logger-target-hint";
-        targetHint.textContent = "target " + repRange.repMin + (repRange.repMax !== repRange.repMin ? "\u2013" + repRange.repMax : "");
+        targetHint.textContent = "target " + formatTargetRange(repRange, mode);
         setRow.appendChild(targetHint);
 
+        // Warm-up toggle — excludes this set from PR/progression calculations
+        // (see PART 2 — warm-up sets should never register as working-set PRs).
+        var warmupLabel = document.createElement("label");
+        warmupLabel.className = "logger-warmup-toggle";
+        warmupLabel.title = "Mark as a warm-up set — excluded from PR and progress tracking";
+        var warmupCb = document.createElement("input");
+        warmupCb.type = "checkbox";
+        if (prefillSets[i] && prefillSets[i].isWarmup) warmupCb.checked = true;
+        warmupLabel.appendChild(warmupCb);
+        warmupLabel.appendChild(document.createTextNode("warm-up"));
+        setRow.appendChild(warmupLabel);
+
         panel.appendChild(setRow);
-        setInputs.push({ weight: wInput, reps: rInput });
+        setInputs.push({ weight: wInput, reps: rInput, seconds: secInput, warmup: warmupCb });
       }
 
       // Copy-previous-set convenience: fills every row's weight from set 1
+      var copyField = mode === "time" ? "seconds" : mode === "reps" ? "reps" : "weight";
       var copyBtn = document.createElement("button");
       copyBtn.className = "hist-btn";
       copyBtn.style.marginTop = "2px";
-      copyBtn.textContent = "copy set 1 weight to all";
+      copyBtn.textContent = "copy set 1 " + (mode === "time" ? "time" : mode === "reps" ? "reps" : "weight") + " to all";
       copyBtn.onclick = function () {
-        var w = setInputs[0].weight.value;
-        setInputs.forEach(function (si) { if (!si.weight.value) si.weight.value = w; });
+        var v = setInputs[0][copyField].value;
+        setInputs.forEach(function (si) { if (si[copyField] && !si[copyField].value) si[copyField].value = v; });
       };
       panel.appendChild(copyBtn);
 
@@ -3688,11 +4701,33 @@
       saveBtn.textContent = "Save session";
       saveBtn.onclick = function () {
         var setsArr = setInputs
-          .map(function (si) { return { weightKg: si.weight.value, reps: si.reps.value }; })
-          .filter(function (s) { return s.weightKg !== "" && s.reps !== ""; });
-        if (!setsArr.length) { alert("Enter at least one set (weight and reps) before saving."); return; }
-        var ok = logSessionSets(key, setsArr, repRange, rirSelect.value, painValue, noteInput.value);
-        if (!ok) { alert("Couldn't save — check the weight and rep values."); return; }
+          .map(function (si) {
+            if (mode === "time") return { seconds: si.seconds.value, isWarmup: !!si.warmup.checked };
+            if (mode === "reps") return { reps: si.reps.value, isWarmup: !!si.warmup.checked };
+            return { weightKg: si.weight.value, reps: si.reps.value, isWarmup: !!si.warmup.checked };
+          })
+          .filter(function (s) {
+            if (mode === "time") return s.seconds !== "";
+            if (mode === "reps") return s.reps !== "";
+            return s.weightKg !== "" && s.reps !== "";
+          });
+        if (!setsArr.length) {
+          alert(mode === "time"
+            ? "Enter at least one hold time (in seconds) before saving."
+            : mode === "reps"
+              ? "Enter at least one set of reps before saving."
+              : "Enter at least one set (weight and reps) before saving.");
+          return;
+        }
+        var ok = logSessionSets(key, setsArr, repRange, rirSelect.value, painValue, noteInput.value, mode);
+        if (!ok) {
+          alert(mode === "time"
+            ? "Couldn't save — check the hold times in seconds."
+            : mode === "reps"
+              ? "Couldn't save — check the rep values."
+              : "Couldn't save — check the weight and rep values.");
+          return;
+        }
         state.openLogger[key] = false;
         renderWorkouts();
       };
@@ -3711,7 +4746,8 @@
         var hrow = document.createElement("div");
         hrow.className = "hist-row session-hist-row";
         var dEl = document.createElement("span"); dEl.className = "mono"; dEl.textContent = session.date;
-        var setsSummary = session.sets.map(function (s) { return s.weightKg + "\u00d7" + s.reps; }).join(", ");
+        var sessMode = sessionMode(session, exerciseName);
+        var setsSummary = session.sets.map(function (s) { return formatSetValue(s, sessMode); }).join(", ");
         var wEl = document.createElement("span");
         wEl.className = "mono";
         wEl.textContent = setsSummary + (session.rir !== null && session.rir !== undefined && session.rir !== "" ? " \u00b7 RIR " + session.rir : "") + (session.pain ? " \u00b7 pain" : "");
@@ -3733,31 +4769,501 @@
     }
   }
 
+  // =========================================================
+  // PART 3 — RENDER: Progress page
+  // =========================================================
+
+  // Generic small SVG line-chart string builder — reused for bodyweight,
+  // measurements and strength charts alike, matching the app's existing
+  // hand-rolled-SVG style (see the muscle-figure icons above).
+  function svgLineChart(points, opts) {
+    opts = opts || {};
+    var w = 300, h = opts.height || 110, padX = 8, padY = 14;
+    if (!points || points.length < 2) {
+      return '<div class="pg-chart-empty">Not enough entries yet to chart a trend — log a couple more.</div>';
+    }
+    var values = points.map(function (p) { return p.value; });
+    var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+    if (min === max) { min -= 1; max += 1; }
+    var stepX = (w - padX * 2) / (points.length - 1);
+    var coords = points.map(function (p, i) {
+      var x = padX + i * stepX;
+      var y = h - padY - ((p.value - min) / (max - min)) * (h - padY * 2);
+      return [x, y];
+    });
+    var pathPts = coords.map(function (c) { return c[0].toFixed(1) + "," + c[1].toFixed(1); }).join(" ");
+    var color = opts.color || "var(--iron-orange)";
+    var lastUp = values[values.length - 1] >= values[0];
+    var trendColor = opts.trendColor !== false ? (lastUp ? "var(--green)" : "var(--coral)") : color;
+    var dots = coords.map(function (c, i) {
+      return '<circle cx="' + c[0].toFixed(1) + '" cy="' + c[1].toFixed(1) + '" r="' + (i === coords.length - 1 ? 3 : 1.6) + '" fill="' + trendColor + '"></circle>';
+    }).join("");
+    var firstLabel = points[0].label, lastLabel = points[points.length - 1].label;
+    return '' +
+      '<svg class="pg-chart-svg" viewBox="0 0 ' + w + ' ' + (h + 14) + '" xmlns="http://www.w3.org/2000/svg">' +
+        '<polyline points="' + pathPts + '" fill="none" stroke="' + trendColor + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>' +
+        dots +
+        '<text x="' + padX + '" y="' + (h + 12) + '" font-size="8" fill="var(--dim)">' + firstLabel + '</text>' +
+        '<text x="' + (w - padX) + '" y="' + (h + 12) + '" font-size="8" fill="var(--dim)" text-anchor="end">' + lastLabel + '</text>' +
+      '</svg>';
+  }
+
+  function filterByRange(entries, dateFn, rangeKey) {
+    if (rangeKey === "all") return entries;
+    var days = { "1m": 30, "3m": 90, "6m": 182, "1y": 365 }[rangeKey] || 90;
+    var cutoff = dateKey(new Date(Date.now() - days * 86400000));
+    return entries.filter(function (e) { return dateFn(e) >= cutoff; });
+  }
+
+  var pgState = {
+    weightRange: "3m",
+    measureField: "waist",
+    measureUnit: "cm",
+    strengthExercise: FEATURED_STRENGTH_EXERCISES[0]
+  };
+
+  function pgFmt(n, decimals) {
+    if (n === null || n === undefined || isNaN(n)) return "—";
+    return Number(n).toFixed(decimals === undefined ? 1 : decimals).replace(/\.0$/, "");
+  }
+
+  // ---- A. Overview ----
+  function renderPgOverview() {
+    var bw = state.bodyWeightEntries;
+    var currentWeight = bw.length ? bw[0].weightKg : null;
+    var weekAgoCut = dateKey(new Date(Date.now() - 7 * 86400000));
+    var weekEntries = bw.filter(function (e) { return e.date >= weekAgoCut; });
+    var weeklyAvg = weekEntries.length ? weekEntries.reduce(function (s, e) { return s + e.weightKg; }, 0) / weekEntries.length : null;
+
+    var latestMeasure = state.measurementSessions[0];
+    var waist = latestMeasure ? latestMeasure.waist : null;
+    var waistUnit = latestMeasure ? latestMeasure.unit : "cm";
+
+    var pullupStats = getExerciseStats("Pull-ups (or Lat Pulldown)");
+
+    var allPRDates = Object.keys(state.exercisePR).map(function (k) { return state.exercisePR[k].prDate; }).filter(Boolean);
+    var mostRecentPR = allPRDates.length ? allPRDates.sort().slice(-1)[0] : null;
+    var monthCut = dateKey(new Date(Date.now() - 30 * 86400000));
+    var prsThisMonth = allPRDates.filter(function (d) { return d >= monthCut; }).length;
+
+    var consistency = computeConsistency();
+
+    var cards = [
+      { label: "Bodyweight", value: currentWeight !== null ? pgFmt(currentWeight) + " kg" : "—", sub: weeklyAvg !== null ? "wk avg " + pgFmt(weeklyAvg) + " kg" : "" },
+      { label: "Waist", value: waist !== null ? pgFmt(waist) + " " + waistUnit : "—", sub: latestMeasure ? latestMeasure.date : "" },
+      { label: "Pull-ups (best)", value: pullupStats ? pullupStats.bestValueLabel : "—", sub: pullupStats ? (pullupStats.mode === "reps" ? "clean reps in one set" : "best set") : "log a set to start" },
+      { label: "Most recent PR", value: mostRecentPR || "—", sub: prsThisMonth + " PR" + (prsThisMonth === 1 ? "" : "s") + " this month" },
+      { label: "Current streak", value: consistency.currentStreak + " days", sub: "best " + consistency.bestStreak + " days" },
+      { label: "This week", value: consistency.weeklyCount + " sessions", sub: consistency.gymSessionsTotal + " gym \u00b7 " + consistency.futsalSessionsTotal + " futsal all-time" }
+    ];
+    return '<div class="pg-overview-grid">' + cards.map(function (c) {
+      return '<div class="pg-stat"><div class="pg-label">' + c.label + '</div><div class="pg-value accent">' + c.value + '</div><div class="pg-sub">' + c.sub + '</div></div>';
+    }).join("") + '</div>';
+  }
+
+  // ---- B. Bodyweight tracking ----
+  function renderPgBodyweight() {
+    var entries = filterByRange(state.bodyWeightEntries.slice().reverse(), function (e) { return e.date; }, pgState.weightRange);
+    var points = entries.map(function (e) { return { date: e.date, label: e.date.slice(5), value: e.weightKg }; });
+
+    var all = state.bodyWeightEntries;
+    var weeklyAvg = null, monthlyAvg = null, changeFromPrev = null, changeFromStart = null, hi = null, lo = null;
+    if (all.length) {
+      var wCut = dateKey(new Date(Date.now() - 7 * 86400000));
+      var mCut = dateKey(new Date(Date.now() - 30 * 86400000));
+      var wEntries = all.filter(function (e) { return e.date >= wCut; });
+      var mEntries = all.filter(function (e) { return e.date >= mCut; });
+      weeklyAvg = wEntries.length ? wEntries.reduce(function (s, e) { return s + e.weightKg; }, 0) / wEntries.length : null;
+      monthlyAvg = mEntries.length ? mEntries.reduce(function (s, e) { return s + e.weightKg; }, 0) / mEntries.length : null;
+      if (all.length >= 2) changeFromPrev = all[0].weightKg - all[1].weightKg;
+      changeFromStart = all[0].weightKg - all[all.length - 1].weightKg;
+      hi = Math.max.apply(null, all.map(function (e) { return e.weightKg; }));
+      lo = Math.min.apply(null, all.map(function (e) { return e.weightKg; }));
+    }
+
+    var rangeBtns = ["1m", "3m", "6m", "1y", "all"].map(function (r) {
+      return '<button class="pg-range-btn' + (pgState.weightRange === r ? " active" : "") + '" data-weight-range="' + r + '">' + r.toUpperCase() + '</button>';
+    }).join("");
+
+    var statsHtml = all.length ? (
+      '<div class="pg-overview-grid" style="margin-top:10px;">' +
+        '<div class="pg-stat"><div class="pg-label">Weekly avg</div><div class="pg-value">' + pgFmt(weeklyAvg) + ' kg</div></div>' +
+        '<div class="pg-stat"><div class="pg-label">Monthly avg</div><div class="pg-value">' + pgFmt(monthlyAvg) + ' kg</div></div>' +
+        '<div class="pg-stat"><div class="pg-label">Vs previous</div><div class="pg-value ' + (changeFromPrev < 0 ? "pos" : changeFromPrev > 0 ? "neg" : "") + '">' + (changeFromPrev !== null ? (changeFromPrev > 0 ? "+" : "") + pgFmt(changeFromPrev) + " kg" : "—") + '</div></div>' +
+        '<div class="pg-stat"><div class="pg-label">Vs start</div><div class="pg-value">' + (changeFromStart !== null ? (changeFromStart > 0 ? "+" : "") + pgFmt(changeFromStart) + " kg" : "—") + '</div></div>' +
+        '<div class="pg-stat"><div class="pg-label">Highest</div><div class="pg-value">' + pgFmt(hi) + ' kg</div></div>' +
+        '<div class="pg-stat"><div class="pg-label">Lowest</div><div class="pg-value">' + pgFmt(lo) + ' kg</div></div>' +
+      '</div>'
+    ) : '<div class="pg-empty-note">No bodyweight entries yet — tap "Log Progress" to add one (aim for ~3x/week, not daily).</div>';
+
+    return '<div class="pg-section"><div class="pg-section-title">Bodyweight</div>' +
+      '<div class="card" style="padding:14px;">' +
+        '<div class="pg-range-row">' + rangeBtns + '</div>' +
+        '<div class="pg-chart-wrap">' + svgLineChart(points, { color: "var(--iron-orange)" }) + '</div>' +
+        statsHtml +
+      '</div></div>';
+  }
+
+  // ---- C. Body measurements ----
+  var MEASUREMENT_LABELS = {
+    waist: "Waist", chest: "Chest", rightBiceps: "R. Biceps", leftBiceps: "L. Biceps",
+    rightThigh: "R. Thigh", leftThigh: "L. Thigh", shoulders: "Shoulders",
+    rightCalf: "R. Calf", leftCalf: "L. Calf", hips: "Hips", neck: "Neck"
+  };
+  function renderPgMeasurements() {
+    var sessions = state.measurementSessions;
+    var latest = sessions[0];
+    var displayUnit = latest ? latest.unit : "cm";
+
+    var cardsHtml = MEASUREMENT_FIELDS.map(function (field) {
+      var withVal = sessions.filter(function (s) { return s[field] !== null && s[field] !== undefined; });
+      if (!withVal.length) {
+        return '<div class="pg-measure-card" data-measure-field="' + field + '"><div class="mc-name">' + MEASUREMENT_LABELS[field] + '</div><div class="mc-value">—</div></div>';
+      }
+      var currentCm = toCm(withVal[0][field], withVal[0].unit);
+      var current = fromCm(currentCm, displayUnit);
+      var change = null;
+      if (withVal.length >= 2) {
+        var prevCm = toCm(withVal[1][field], withVal[1].unit);
+        change = fromCm(currentCm - prevCm, displayUnit);
+      }
+      var changeClass = change === null ? "flat" : change > 0.05 ? "pos" : change < -0.05 ? "neg" : "flat";
+      var changeText = change === null ? "first entry" : (change > 0 ? "+" : "") + pgFmt(change) + " " + displayUnit;
+      return '<div class="pg-measure-card" data-measure-field="' + field + '">' +
+        '<div class="mc-name">' + MEASUREMENT_LABELS[field] + '</div>' +
+        '<div class="mc-value">' + pgFmt(current) + ' ' + displayUnit + '</div>' +
+        '<div class="mc-change ' + changeClass + '">' + changeText + '</div>' +
+      '</div>';
+    }).join("");
+
+    var selectedField = pgState.measureField;
+    var selHist = sessions.filter(function (s) { return s[selectedField] !== null && s[selectedField] !== undefined; })
+      .slice().reverse();
+    var chartPoints = selHist.map(function (s) {
+      return { date: s.date, label: s.date.slice(5), value: fromCm(toCm(s[selectedField], s.unit), displayUnit) };
+    });
+
+    var options = MEASUREMENT_FIELDS.map(function (f) {
+      return '<option value="' + f + '"' + (f === selectedField ? " selected" : "") + '>' + MEASUREMENT_LABELS[f] + '</option>';
+    }).join("");
+
+    return '<div class="pg-section"><div class="pg-section-title">Body Measurements</div>' +
+      '<div class="card" style="padding:14px;">' +
+        (sessions.length ? '<div class="pg-measure-grid">' + cardsHtml + '</div>' : '<div class="pg-empty-note">No measurements logged yet — recommended every 2 weeks. Tap "Log Progress" to start.</div>') +
+        (sessions.length ? (
+          '<select class="pg-metric-select" id="pgMeasureSelect">' + options + '</select>' +
+          '<div class="pg-chart-wrap">' + svgLineChart(chartPoints, { color: "var(--green-soft)" }) + '</div>'
+        ) : "") +
+      '</div></div>';
+  }
+
+  // ---- E/F. Strength + Pull-up progress ----
+  function renderPgStrength() {
+    var featuredHtml = FEATURED_STRENGTH_EXERCISES.map(function (name) {
+      var s = getExerciseStats(name);
+      if (!s) return "";
+      return renderPrCardHtml(s, name.toLowerCase().indexOf("pull-up") !== -1);
+    }).join("");
+
+    var loggedNames = Object.keys(state.exercisePR)
+      .map(function (k) { return k.split("::").slice(1).join("::"); })
+      .filter(function (n) { return FEATURED_STRENGTH_EXERCISES.indexOf(n) === -1; });
+    var allNames = FEATURED_STRENGTH_EXERCISES.concat(loggedNames);
+    var options = allNames.map(function (n) {
+      return '<option value="' + n.replace(/"/g, "&quot;") + '"' + (n === pgState.strengthExercise ? " selected" : "") + '>' + n + '</option>';
+    }).join("");
+
+    var chartStats = getExerciseStats(pgState.strengthExercise);
+    var chartMode = chartStats ? chartStats.mode : "weight";
+    var chartPoints = chartStats ? chartStats.history.map(function (h) { return { date: h.date, label: h.date.slice(5), value: h.value }; }) : [];
+    var chartCaption = chartMode === "time"
+      ? "Longest hold (seconds) per logged day (warm-ups excluded)"
+      : chartMode === "reps"
+        ? "Best set (clean reps) per logged day (warm-ups excluded)"
+        : "Top working-set weight per logged day (warm-ups excluded)";
+
+    var anyPR = Object.keys(state.exercisePR).length > 0;
+
+    return '<div class="pg-section"><div class="pg-section-title">Strength</div>' +
+      (anyPR ? featuredHtml : '<div class="pg-empty-note">Log working sets on the Workouts tab and your PRs will start showing up here automatically.</div>') +
+      (anyPR ? (
+        '<div class="card" style="padding:14px;margin-top:8px;">' +
+          '<select class="pg-metric-select" id="pgStrengthSelect">' + options + '</select>' +
+          '<div class="pg-chart-wrap">' + svgLineChart(chartPoints, { color: "var(--iron-orange)" }) + '</div>' +
+          '<div class="pg-sub" style="margin-top:6px;">' + chartCaption + '</div>' +
+        '</div>'
+      ) : "") +
+    '</div>';
+  }
+
+  function renderPrCardHtml(s, isPullups) {
+    // Best/previous read in the exercise's own metric — kg x reps for
+    // loaded work, clean reps for bodyweight, seconds for static holds.
+    // Estimated 1RM is only ever shown for weight-tracked movements.
+    var bestStr = s.mode === "weight"
+      ? pgFmt(s.bestWeightKg, 1) + 'kg \u00d7 ' + s.bestReps
+      : s.bestValueLabel;
+    var prevStr = s.prevBestValue
+      ? (s.mode === "weight" ? pgFmt(s.prevBestWeightKg, 1) + 'kg \u00d7 ' + s.prevBestReps : s.prevBestValueLabel)
+      : null;
+    var unitNote = s.mode === "time" ? " \u00b7 longest hold" : s.mode === "reps" ? " \u00b7 clean reps" : "";
+    return '<div class="pg-pr-card' + (isPullups ? " highlight" : "") + '">' +
+      '<div class="pr-name">' + s.name + (isPullups ? " \ud83c\udfc6" : "") + '</div>' +
+      '<div class="pg-pr-row">' +
+        '<span>Current best: <b>' + bestStr + '</b>' + unitNote + '</span>' +
+        (prevStr ? '<span>Previous: <b>' + prevStr + '</b></span>' : "") +
+        (s.mode === "weight" && s.best1RM ? '<span>Est. 1RM: <b>' + pgFmt(s.best1RM, 1) + 'kg</b></span>' : "") +
+      '</div>' +
+      '<div class="pg-pr-row" style="margin-top:4px;">' +
+        (s.pctFromFirst !== null ? '<span class="improve ' + (s.pctFromFirst >= 0 ? "pos" : "neg") + '">' + (s.pctFromFirst >= 0 ? "+" : "") + s.pctFromFirst + '% since first logged</span>' : "") +
+        (s.pctFromPrevious !== null ? '<span class="improve ' + (s.pctFromPrevious >= 0 ? "pos" : "neg") + '">' + (s.pctFromPrevious >= 0 ? "+" : "") + s.pctFromPrevious + '% vs previous best</span>' : "") +
+      '</div>' +
+      '<div class="pg-pr-date">PR: ' + s.prDate + '</div>' +
+    '</div>';
+  }
+
+  // ---- G. Goals ----
+  var GOAL_METRIC_OPTIONS = [
+    ["pullups", "Pull-ups (clean reps)"], ["bench", "Bench Press (kg)"], ["squat", "Squat (kg)"],
+    ["bodyweight", "Bodyweight (kg)"], ["waist", "Waist (cm)"], ["chest", "Chest (cm)"],
+    ["rightBiceps", "R. Biceps (cm)"], ["leftBiceps", "L. Biceps (cm)"]
+  ];
+  function renderPgGoals() {
+    var goalsHtml = state.goals.map(function (g) {
+      var pct = goalProgressPercent(g);
+      var current = currentValueForMetric(g.metricType);
+      var label = GOAL_METRIC_OPTIONS.find(function (m) { return m[0] === g.metricType; });
+      return '<div class="pg-goal-card">' +
+        '<div class="g-top">' +
+          '<div class="g-name' + (g.completed ? " done" : "") + '">' + g.name + '</div>' +
+          '<button class="pg-goal-del" data-del-goal="' + g.id + '">\u2715</button>' +
+        '</div>' +
+        '<div class="g-vals">' + (label ? label[1] : g.metricType) + ' \u00b7 current ' + (current !== null ? pgFmt(current) : "—") + ' \u2192 target ' + pgFmt(g.target) + (g.targetDate ? " by " + g.targetDate : "") + '</div>' +
+        '<div class="pg-goal-bar-track"><div class="pg-goal-bar-fill' + (pct >= 100 ? " done" : "") + '" style="width:' + pct + '%;"></div></div>' +
+      '</div>';
+    }).join("");
+
+    return '<div class="pg-section"><div class="pg-section-title">Goals</div>' +
+      '<div class="card" style="padding:14px;">' +
+        (state.goals.length ? goalsHtml : '<div class="pg-empty-note">No goals yet.</div>') +
+        '<button class="hist-btn" id="pgAddGoalBtn" style="margin-top:6px;">+ Add goal</button>' +
+      '</div></div>';
+  }
+
+  // ---- H. Consistency ----
+  function renderPgConsistency() {
+    var c = computeConsistency();
+    var todayIsSat = DAY_NAMES[new Date().getDay()] === "Sat";
+    return '<div class="pg-section"><div class="pg-section-title">Consistency</div>' +
+      '<div class="card" style="padding:14px;">' +
+        '<div class="pg-overview-grid">' +
+          '<div class="pg-stat"><div class="pg-label">This week</div><div class="pg-value">' + c.weeklyCount + '</div></div>' +
+          '<div class="pg-stat"><div class="pg-label">This month</div><div class="pg-value">' + c.monthlyCount + '</div></div>' +
+          '<div class="pg-stat"><div class="pg-label">Current streak</div><div class="pg-value accent">' + c.currentStreak + ' days</div></div>' +
+          '<div class="pg-stat"><div class="pg-label">Best streak</div><div class="pg-value">' + c.bestStreak + ' days</div></div>' +
+          '<div class="pg-stat"><div class="pg-label">Gym sessions</div><div class="pg-value">' + c.gymSessionsTotal + '</div></div>' +
+          '<div class="pg-stat"><div class="pg-label">Futsal sessions</div><div class="pg-value">' + c.futsalSessionsTotal + '</div></div>' +
+        '</div>' +
+        '<div class="pg-sub" style="margin-top:8px;">Wednesday rest days are never counted as missed. Saturday futsal has no exercise log, so mark it manually:</div>' +
+        '<button class="hist-btn" id="pgLogFutsalBtn" style="margin-top:6px;">' + (todayIsSat ? "Log today's futsal" : "Log futsal session") + '</button>' +
+      '</div></div>';
+  }
+
+  // ---- J. Recent progress history ----
+  function renderPgHistory() {
+    var events = [];
+    state.bodyWeightEntries.slice(0, 30).forEach(function (e) { events.push({ date: e.date, line: "Weight: " + pgFmt(e.weightKg) + " kg" + (e.note ? " \u2014 " + e.note : "") }); });
+    state.measurementSessions.slice(0, 15).forEach(function (s) {
+      var parts = MEASUREMENT_FIELDS.filter(function (f) { return s[f] !== null && s[f] !== undefined; })
+        .map(function (f) { return MEASUREMENT_LABELS[f] + " " + pgFmt(s[f]) + s.unit; });
+      if (parts.length) events.push({ date: s.date, line: parts.join(", ") });
+    });
+    Object.keys(state.exercisePR).forEach(function (key) {
+      var name = key.split("::").slice(1).join("::");
+      var recMode = state.exercisePR[key].mode || trackingModeFor(name);
+      state.exercisePR[key].prHistory.slice(0, 12).forEach(function (h) {
+        var hMode = h.mode || recMode;
+        var hLabel = hMode === "weight"
+          ? (pgFmt(h.weightKg, 1) + "kg \u00d7 " + h.reps)
+          : formatMetricValue(h.value !== undefined && h.value !== null ? h.value : h.weightKg, hMode);
+        if (h.flagged) {
+          events.push({ date: h.date, line: "\u26a0 " + name + " " + hLabel + " \u2014 looked like a logging error, not counted as a PR" });
+        } else if (h.date === state.exercisePR[key].prDate) {
+          events.push({ date: h.date, line: "\ud83c\udfc6 " + name + " PR \u2014 " + hLabel });
+        }
+      });
+    });
+    events.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    events = events.slice(0, 25);
+
+    var html = events.length ? events.map(function (e) {
+      return '<div class="pg-history-item"><div class="pg-history-date">' + e.date + '</div><div class="pg-history-line">' + e.line + '</div></div>';
+    }).join("") : '<div class="pg-empty-note">Nothing logged yet.</div>';
+
+    return '<div class="pg-section"><div class="pg-section-title">Recent Progress</div><div class="card" style="padding:14px;">' + html + '</div></div>';
+  }
+
+  // ---- Root render + event wiring ----
+  function renderProgress() {
+    var root = document.getElementById("progressRoot");
+    if (!root) return;
+    root.innerHTML =
+      '<button class="pg-log-btn" id="pgLogProgressBtn">+ Log Progress</button>' +
+      '<div class="pg-section">' + renderPgOverview() + '</div>' +
+      renderPgBodyweight() +
+      renderPgMeasurements() +
+      renderPgStrength() +
+      renderPgGoals() +
+      renderPgConsistency() +
+      renderPgHistory();
+
+    document.getElementById("pgLogProgressBtn").onclick = openLogProgressModal;
+
+    root.querySelectorAll("[data-weight-range]").forEach(function (btn) {
+      btn.onclick = function () { pgState.weightRange = btn.getAttribute("data-weight-range"); renderProgress(); };
+    });
+    var measureSel = document.getElementById("pgMeasureSelect");
+    if (measureSel) measureSel.onchange = function () { pgState.measureField = measureSel.value; renderProgress(); };
+    root.querySelectorAll("[data-measure-field]").forEach(function (card) {
+      card.onclick = function () { pgState.measureField = card.getAttribute("data-measure-field"); renderProgress(); };
+    });
+    var strengthSel = document.getElementById("pgStrengthSelect");
+    if (strengthSel) strengthSel.onchange = function () { pgState.strengthExercise = strengthSel.value; renderProgress(); };
+
+    var futsalBtn = document.getElementById("pgLogFutsalBtn");
+    if (futsalBtn) futsalBtn.onclick = function () { logFutsalToday(); renderProgress(); };
+
+    var addGoalBtn = document.getElementById("pgAddGoalBtn");
+    if (addGoalBtn) addGoalBtn.onclick = openAddGoalModal;
+    root.querySelectorAll("[data-del-goal]").forEach(function (btn) {
+      btn.onclick = function () { deleteGoal(btn.getAttribute("data-del-goal")); renderProgress(); };
+    });
+  }
+
+  // ---- K. Quick "Log Progress" modal — bodyweight + measurements together ----
+  function closeAnyPgModal() {
+    var existing = document.getElementById("pgModalBackdrop");
+    if (existing) existing.remove();
+  }
+  function openLogProgressModal() {
+    closeAnyPgModal();
+    var today = dateKey(new Date());
+    var backdrop = document.createElement("div");
+    backdrop.className = "pg-modal-backdrop";
+    backdrop.id = "pgModalBackdrop";
+    var measureFieldRows = MEASUREMENT_FIELDS.map(function (f) {
+      return '<div class="pg-field-row"><label>' + MEASUREMENT_LABELS[f] + '</label><input type="number" step="0.1" data-mfield="' + f + '" /></div>';
+    }).join("");
+    backdrop.innerHTML =
+      '<div class="pg-modal">' +
+        '<h3>Log Progress</h3>' +
+        '<div class="pg-field-row"><label>Date</label><input type="date" id="pgLogDate" value="' + today + '" /></div>' +
+        '<div class="pg-field-row"><label>Bodyweight (kg)</label><input type="number" step="0.1" id="pgLogWeight" placeholder="e.g. 69.4" /></div>' +
+        '<div class="pg-unit-toggle">' +
+          '<button class="day-pill' + (pgState.measureUnit === "cm" ? " active" : "") + '" id="pgUnitCm">cm</button>' +
+          '<button class="day-pill' + (pgState.measureUnit === "in" ? " active" : "") + '" id="pgUnitIn">in</button>' +
+        '</div>' +
+        '<div class="pg-measure-fields-grid">' + measureFieldRows + '</div>' +
+        '<div class="pg-field-row"><label>Note (optional)</label><input type="text" id="pgLogNote" maxlength="120" /></div>' +
+        '<div class="pg-modal-actions">' +
+          '<button class="pg-modal-close-btn" id="pgModalCancel">Cancel</button>' +
+          '<button class="auth-btn" id="pgModalSave">Save</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(backdrop);
+
+    var unit = pgState.measureUnit;
+    document.getElementById("pgUnitCm").onclick = function () { unit = "cm"; document.getElementById("pgUnitCm").classList.add("active"); document.getElementById("pgUnitIn").classList.remove("active"); };
+    document.getElementById("pgUnitIn").onclick = function () { unit = "in"; document.getElementById("pgUnitIn").classList.add("active"); document.getElementById("pgUnitCm").classList.remove("active"); };
+    document.getElementById("pgModalCancel").onclick = closeAnyPgModal;
+    backdrop.onclick = function (e) { if (e.target === backdrop) closeAnyPgModal(); };
+
+    document.getElementById("pgModalSave").onclick = function () {
+      var d = document.getElementById("pgLogDate").value || today;
+      var weightVal = parseFloat(document.getElementById("pgLogWeight").value);
+      var note = document.getElementById("pgLogNote").value;
+      var didSomething = false;
+
+      if (!isNaN(weightVal)) { addBodyWeightEntry(d, weightVal, note); didSomething = true; }
+
+      var values = {};
+      document.querySelectorAll("[data-mfield]").forEach(function (input) {
+        values[input.getAttribute("data-mfield")] = input.value;
+      });
+      pgState.measureUnit = unit;
+      if (addMeasurementSession(d, unit, values, note)) didSomething = true;
+
+      if (!didSomething) { alert("Enter at least a weight or one measurement before saving."); return; }
+      closeAnyPgModal();
+      renderProgress();
+    };
+  }
+
+  // ---- G. Add-goal modal ----
+  function openAddGoalModal() {
+    closeAnyPgModal();
+    var backdrop = document.createElement("div");
+    backdrop.className = "pg-modal-backdrop";
+    backdrop.id = "pgModalBackdrop";
+    var metricOptions = GOAL_METRIC_OPTIONS.map(function (m) { return '<option value="' + m[0] + '">' + m[1] + '</option>'; }).join("");
+    backdrop.innerHTML =
+      '<div class="pg-modal">' +
+        '<h3>Add Goal</h3>' +
+        '<div class="pg-field-row"><label>Name</label><input type="text" id="pgGoalName" placeholder="e.g. 10 clean pull-ups" maxlength="60" /></div>' +
+        '<div class="pg-field-row"><label>Metric</label><select id="pgGoalMetric">' + metricOptions + '</select></div>' +
+        '<div class="pg-field-row"><label>Target value</label><input type="number" step="0.1" id="pgGoalTarget" /></div>' +
+        '<div class="pg-field-row"><label>Target date (optional)</label><input type="date" id="pgGoalDate" /></div>' +
+        '<div class="pg-modal-actions">' +
+          '<button class="pg-modal-close-btn" id="pgModalCancel">Cancel</button>' +
+          '<button class="auth-btn" id="pgModalSave">Save</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(backdrop);
+    document.getElementById("pgModalCancel").onclick = closeAnyPgModal;
+    backdrop.onclick = function (e) { if (e.target === backdrop) closeAnyPgModal(); };
+    document.getElementById("pgModalSave").onclick = function () {
+      var name = document.getElementById("pgGoalName").value.trim();
+      var metric = document.getElementById("pgGoalMetric").value;
+      var target = document.getElementById("pgGoalTarget").value;
+      var tDate = document.getElementById("pgGoalDate").value;
+      if (!name || target === "" || isNaN(Number(target))) { alert("Enter a goal name and a target value."); return; }
+      addGoal(name, metric, target, tDate);
+      closeAnyPgModal();
+      renderProgress();
+    };
+  }
+
+  // ---- Main nav (Workouts / Progress) ----
+  function switchMainView(view) {
+    state.activeView = view;
+    var vW = document.getElementById("view-workouts");
+    var vP = document.getElementById("view-progress");
+    // NOTE: .view { display:none } / .view.active { display:block } in CSS, so the
+    // active class must be toggled too — an empty inline display falls back to none.
+    vW.classList.toggle("active", view === "workouts");
+    vP.classList.toggle("active", view === "progress");
+    vW.style.display = view === "workouts" ? "block" : "none";
+    vP.style.display = view === "progress" ? "block" : "none";
+    document.getElementById("navBtnWorkouts").classList.toggle("active", view === "workouts");
+    document.getElementById("navBtnProgress").classList.toggle("active", view === "progress");
+    if (view === "progress") {
+      // Re-sync from workout logs first, so anything logged (or synced from
+      // the cloud) since the last visit is reflected immediately.
+      if (backfillProgressFromSessionLogs()) saveState();
+      renderProgress();
+    }
+  }
+
   function renderWorkouts() {
     var phase = getPhase(state.phase);
 
-    // phase tabs reuse phase bar style via simple buttons row (build once into pills container? use day pills row at top)
     var titleEl = document.getElementById("workoutPhaseTitle");
     titleEl.innerHTML = "";
-    var phaseRow = document.createElement("div");
-    phaseRow.className = "day-pill-row";
-    phaseRow.style.marginBottom = "10px";
-    PHASES.forEach(function (p) {
-      var pill = document.createElement("span");
-      pill.className = "day-pill" + (state.phase === p.key ? " active" : "");
-      pill.textContent = p.pLabel;
-      pill.onclick = function () {
-        state.workoutDay = "Sun";
-        setPhase(p.key);
-      };
-      phaseRow.appendChild(pill);
-    });
-    titleEl.appendChild(phaseRow);
     var titleText = document.createElement("div");
-    titleText.textContent = phase.title;
+    titleText.textContent = "THIS WEEK";
     titleEl.appendChild(titleText);
 
-    document.getElementById("workoutPhaseGoal").textContent = phase.goal;
+    document.getElementById("workoutPhaseGoal").textContent = "";
 
     var dayPills = document.getElementById("workoutDayPills");
     dayPills.innerHTML = "";
@@ -3773,14 +5279,7 @@
     var tbody = document.getElementById("workoutTableBody");
     tbody.innerHTML = "";
 
-    if (state.workoutDay === "Sat") {
-      var tr = document.createElement("tr");
-      var td = document.createElement("td");
-      td.colSpan = 3;
-      td.textContent = "Rest day. " + SATURDAY_NOTE;
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-    } else if (dayPlan) {
+    if (dayPlan) {
       var capTr = document.createElement("tr");
       var capTd = document.createElement("td");
       capTd.colSpan = 3;
@@ -3853,7 +5352,7 @@
         var c3 = document.createElement("td"); c3.dataset.label = "Log";
         var repRange = parseSetsRepRange(planStr);
         if (repRange) {
-          renderSetLoggerCell(c3, key, repRange, effectiveName);
+          renderSetLoggerCell(c3, key, repRange, effectiveName, planStr);
         } else {
           renderLegacyWeightCell(c3, key, hist, lastEntry);
         }
@@ -3920,7 +5419,7 @@
     function playStartSound() {}
     // Short, dry click on every whole second while the countdown runs.
     function playTickSound() {
-      playTone(1500, 30, 0, 0.9, "square");
+      playTone(1500, 30, 0, 0.5, "square");
     }
     // Synthesized beep — plays both when the countdown finishes and when
     // the user manually stops it.
@@ -4063,6 +5562,8 @@
   function startApp() {
     applyPhaseBackground();
     renderWorkouts();
+    document.getElementById("navBtnWorkouts").onclick = function () { switchMainView("workouts"); };
+    document.getElementById("navBtnProgress").onclick = function () { switchMainView("progress"); };
   }
 
   function showApp() {
@@ -4175,6 +5676,11 @@
       sendAiCoachMessage(this.value);
     }
   });
+
+  var exportBtn = document.getElementById("exportDataBtn");
+  if (exportBtn) exportBtn.onclick = function () { downloadAiReport(); flashExportBtn(this, "Downloaded ✓"); };
+  var copyBtn = document.getElementById("copyDataBtn");
+  if (copyBtn) copyBtn.onclick = function () { copyAiReport(this); };
 
   initTimerFab();
 })();
