@@ -81,6 +81,14 @@
     50% { filter: brightness(1.1) saturate(1.15); }
   }
 
+    .timer-fab-text.flash-start {
+    animation: clockFlash 0.4s ease-out 3;
+  }
+  @keyframes clockFlash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.15; }
+  }
+
   .mono { font-family: 'JetBrains Mono', monospace; }
   .grit { font-family: 'Oswald', 'Inter', sans-serif; }
 
@@ -1984,7 +1992,7 @@
   // ---- State ----
   var state = {
     phase: "p1",           // single phase used across Workout Plans
-    workoutDay: "Sun",
+    workoutDay: DAY_NAMES[new Date().getDay()], // defaults to today's day (e.g. opens on Fri if today is Friday)
     weightLogs: {},      // { exerciseKey: [ {date: 'YYYY-MM-DD', weight: 60}, ... ] }  newest first — LEGACY, kept for backward compat ("last: Xkg" badge)
     // mode is "weight" | "reps" | "time"; a set carries only the fields its
     // mode uses — {weightKg,reps} / {reps} / {seconds}.
@@ -5520,6 +5528,7 @@
       fabBtn.classList.add("counting");
       fabBtn.classList.remove("done");
       textEl.textContent = fmtTime(secs);
+      textEl.classList.add("flash-start");
       fabBtn.style.setProperty("--progress", 0);
       tickHandle = setInterval(tick, 200);
       closeMenu();
